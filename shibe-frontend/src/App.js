@@ -13,6 +13,7 @@ class App extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.deleteTodo = this.deleteTodo.bind(this);
   }
 
   // componentDidMount() {
@@ -28,10 +29,10 @@ class App extends Component {
   // Handles onClick event from the "Add" button to push the todo into the list
   handleClick() {
     if (this.state.todosToAdd !== '') {
-      let todosCopy = this.state.todos.slice();
-      todosCopy.push(this.state.todosToAdd);
+      let todosListCopy = this.state.todos.slice();
+      todosListCopy.push(this.state.todosToAdd);
       this.setState({
-        todos: todosCopy,
+        todos: todosListCopy,
         todosToAdd: ""
       });
     } else {
@@ -46,12 +47,27 @@ class App extends Component {
     });
   }
 
+  deleteTodo(index) {
+    let todosListCopy = this.state.todos.slice();
+    todosListCopy.splice(index, 1);
+    this.setState({
+      todos: todosListCopy
+    });
+  }
+
   render() {
+    let todos = this.state.todos;
+      const listOfTodos = todos.map((todo, index) => {
+        return (
+          <TodoList todo={todo} delete={() => this.deleteTodo(index)} />
+        );
+      });
+
     return (
       <div className="App">
       <input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
       <button onClick={this.handleClick}>Add</button>
-      <TodoList todos={this.state.todos} />
+      <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
       </div>
     );
   }
