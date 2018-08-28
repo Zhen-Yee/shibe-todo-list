@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { TodoList } from './components/TodoList'
+import { Button, Input } from 'semantic-ui-react';
 
 class App extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class App extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
+    this.handleCheck = this.handleCheck.bind(this);
   }
 
   // componentDidMount() {
@@ -47,6 +49,17 @@ class App extends Component {
     });
   }
 
+  handleCheck(e, data) {
+    if (data.checked === true) {
+        fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+        .then(res => res.json())
+        .then(json => this.setState({
+            shibaImg: json
+        })
+      );
+    }
+  }
+
   deleteTodo(index) {
     let todosListCopy = this.state.todos.slice();
     todosListCopy.splice(index, 1);
@@ -57,17 +70,21 @@ class App extends Component {
 
   render() {
     let todos = this.state.todos;
-      const listOfTodos = todos.map((todo, index) => {
-        return (
-          <TodoList todo={todo} delete={() => this.deleteTodo(index)} />
-        );
-      });
+    const listOfTodos = todos.map((todo, index) => {
+      return (
+        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data)} delete={() => this.deleteTodo(index)}/>
+      );
+    });
+
+    const shibe = this.state.shibaImg !== undefined ? <img src={this.state.shibaImg[0]} alt='shibe' /> : '';
 
     return (
       <div className="App">
-      <input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
-      <button onClick={this.handleClick}>Add</button>
-      <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
+        <h1>Welcome to Shibe Todo List!</h1>
+        <Input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
+        <Button onClick={this.handleClick}>Add</Button>
+        <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
+        {shibe}
       </div>
     );
   }

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Button, List } from 'semantic-ui-react';
+import { CheckboxComponent } from './CheckboxComponent';
 
-export class TodoList extends Component {
-    render() {
-        return (
-          <li>
-          <input type="checkbox" />{this.props.todo}<button onClick={this.props.delete}>X</button>
-          </li>
-        );
-    }
+export const TodoList = props => {
+    return (
+        <List>
+        <CheckboxComponent onCheck={props.check}></CheckboxComponent> {props.todo} <Button onClick={props.delete}>Remove</Button>
+        </List>
+      );
 }
