@@ -18,16 +18,6 @@ class App extends Component {
     this.handleCheck = this.handleCheck.bind(this);
   }
 
-  // componentDidMount() {
-  //   fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true/')
-  //     .then(res => res.json())
-  //     .then(json => {
-  //       this.setState({
-  //         shibeImg: json
-  //       })
-  //     });
-  // }
-
   // Handles onClick event from the "Add" button to push the todo into the list
   handleClick() {
     if (this.state.todosToAdd !== '') {
@@ -49,6 +39,8 @@ class App extends Component {
     });
   }
 
+  // Handles check event from checkbox. When checkbox is checked, it will fetch shibe img from api
+  // and store it in the state
   handleCheck(e, data) {
     if (data.checked === true) {
         fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
@@ -60,6 +52,7 @@ class App extends Component {
     }
   }
 
+  // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
     let todosListCopy = this.state.todos.slice();
     todosListCopy.splice(index, 1);
@@ -76,15 +69,13 @@ class App extends Component {
       );
     });
 
-    const shibe = this.state.shibaImg !== undefined ? <img src={this.state.shibaImg[0]} alt='shibe' /> : '';
-
     return (
       <div className="App">
         <h1>Welcome to Shibe Todo List!</h1>
         <Input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
         <Button onClick={this.handleClick}>Add</Button>
         <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
-        {shibe}
+        {this.state.shibaImg !== undefined ? <img src={this.state.shibaImg[0]} alt='shibe' /> : ''}
       </div>
     );
   }
