@@ -10,7 +10,7 @@ class App extends Component {
       shibaImg: [],
       todos: [],
       todosToAdd: "",
-      todoDone: false
+      todoDone: []
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -24,6 +24,7 @@ class App extends Component {
     if (this.state.todosToAdd !== '') {
       let todosListCopy = this.state.todos.slice();
       todosListCopy.push(this.state.todosToAdd);
+
       this.setState({
         todos: todosListCopy,
         todosToAdd: ""
@@ -42,13 +43,16 @@ class App extends Component {
 
   // Handles check event from checkbox. When checkbox is checked, it will fetch shibe img from api
   // and store it in the state
-  handleCheck(e, data) {
+  handleCheck(e, data, index) {
     if (data.checked === true) {
-        fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
-        .then(res => res.json())
-        .then(json => this.setState({
-            shibaImg: json,
-            todoDone: true
+      let todosDone = this.state.todoDone.slice();
+      todosDone[index] = true;
+
+      fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+      .then(res => res.json())
+      .then(json => this.setState({
+          shibaImg: json,
+          todoDone: todosDone
         })
       );
     }
@@ -67,7 +71,7 @@ class App extends Component {
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
-        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone}/>
+        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data, index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone[index]} />
       );
     });
 
