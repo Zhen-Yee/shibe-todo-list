@@ -5,7 +5,7 @@ import { CheckboxComponent } from './CheckboxComponent';
 export const TodoList = props => {
     return (
         <List>
-        <CheckboxComponent onCheck={props.check}></CheckboxComponent> {props.todo} <Button onClick={props.delete}>Remove</Button>
+        <CheckboxComponent onCheck={props.check} isDisable={props.disableCheck}></CheckboxComponent> {props.todo} <Button onClick={props.delete}>Remove</Button>
         </List>
       );
 }

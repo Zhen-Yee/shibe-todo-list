@@ -7,9 +7,10 @@ class App extends Component {
     super(props);
 
     this.state = {
-      shibeImg: [],
+      shibaImg: [],
       todos: [],
-      todosToAdd: ""
+      todosToAdd: "",
+      todoDone: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -46,7 +47,8 @@ class App extends Component {
         fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
         .then(res => res.json())
         .then(json => this.setState({
-            shibaImg: json
+            shibaImg: json,
+            todoDone: true
         })
       );
     }
@@ -65,7 +67,7 @@ class App extends Component {
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
-        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data)} delete={() => this.deleteTodo(index)}/>
+        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone}/>
       );
     });
 
@@ -75,7 +77,7 @@ class App extends Component {
         <Input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
         <Button onClick={this.handleClick}>Add</Button>
         <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
-        {this.state.shibaImg !== undefined ? <img src={this.state.shibaImg[0]} alt='shibe' /> : ''}
+        {this.state.shibaImg.length > 0 ? <img src={this.state.shibaImg[0]} alt='shibe' /> : ''}
       </div>
     );
   }
