@@ -77,7 +77,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1>Welcome to Shibe Todo List!</h1>
+        <h1>Welcome to Shibe Todo List! (Update coming soon)</h1>
         <Input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
         <Button onClick={this.handleClick}>Add</Button>
         <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
