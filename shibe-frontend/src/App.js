@@ -42,12 +42,12 @@ class App extends Component {
   }
 
   // Handles check event from checkbox. When checkbox is checked, it will fetch shibe img from api
-  // and store it in the state
+  // and store it in the state.
+  // Makes a copy of the todos that are done and set it's value to true (this is to prevent from user to check the checkbox multipletime)
   handleCheck(e, data, index) {
     if (data.checked === true) {
       let todosDone = this.state.todoDone.slice();
       todosDone[index] = true;
-
       fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
       .then(res => res.json())
       .then(json => this.setState({
@@ -71,7 +71,7 @@ class App extends Component {
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
-        <TodoList key={index} todo={todo} check={(e, data) => this.handleCheck(e, data, index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone[index]} />
+        <TodoList key={index} shiba={this.state.shibaImg[0]} todo={todo} check={(e, data) => this.handleCheck(e, data, index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone[index]} />
       );
     });
 
@@ -81,7 +81,6 @@ class App extends Component {
         <Input placeholder="Something to do" value={this.state.todosToAdd} onChange={this.handleOnChange}/>
         <Button onClick={this.handleClick}>Add</Button>
         <ul style={{"listStyle": "none"}}>{listOfTodos}</ul>
-        {this.state.shibaImg.length > 0 ? <img src={this.state.shibaImg[0]} alt='shibe' /> : ''}
       </div>
     );
   }
