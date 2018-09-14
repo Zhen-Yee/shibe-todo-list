@@ -1,7 +1,10 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
+/node_modules
 /shibe-backend/node_modules
+/package-lock.json
+/shibe-backend/package-lock.json
 
 # testing
 /coverage
