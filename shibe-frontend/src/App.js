@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Button } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
 
@@ -12,13 +12,15 @@ class App extends Component {
       todos: [],
       todosToAdd: "",
       noteToAdd: "",
-      todoDone: []
+      todoDone: [],
+      users: []
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
-    this.handleDone = this.handleDone.bind(this);
+    // this.handleDone = this.handleDone.bind(this);
+    this.handleClik = this.handleClik.bind(this);
   }
 
   // Handles onClick event from the "Add" button to push the todo into the list
@@ -56,18 +58,25 @@ class App extends Component {
   // Handles check event from checkbox. When checkbox is checked, it will fetch shibe img from api
   // and store it in the state.
   // Makes a copy of the todos that are done and set it's value to true (this is to prevent from user to check the checkbox multipletime)
-  handleDone(index) {
+  // handleDone(index) {
+  //   let todosDone = this.state.todoDone.slice();
+  //   todosDone[index] = true;
+  //   fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+  //   .then(res => res.json())
+  //   .then(json => this.setState({
+  //       shibaImg: json,
+  //       todoDone: todosDone
+  //     })
+  //   );
+  // }
+  handleClik(index) {
     let todosDone = this.state.todoDone.slice();
     todosDone[index] = true;
-    fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+    fetch('/api/test')
     .then(res => res.json())
-    .then(json => this.setState({
-        shibaImg: json,
-        todoDone: todosDone
-      })
-    );
+    .then(bruh => this.setState({ users: bruh }));
   }
-
+  
   // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
     let todosListCopy = this.state.todos.slice();
@@ -89,6 +98,7 @@ class App extends Component {
       <div className="App">
         <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleClick}></AddTodo>
         <br />
+        <Button onClick={this.handleClik}>sad</Button>
         <Card.Group>{listOfTodos}</Card.Group>
       </div>
     );
