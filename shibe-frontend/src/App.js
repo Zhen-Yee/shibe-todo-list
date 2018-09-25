@@ -87,7 +87,6 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1>Welcome to Shibe Todo List! (Update coming soon)</h1>
         <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleClick}></AddTodo>
         <br />
         <Card.Group>{listOfTodos}</Card.Group>
