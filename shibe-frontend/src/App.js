@@ -19,7 +19,7 @@ class App extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
-    // this.handleDone = this.handleDone.bind(this);
+    //this.handleDone = this.handleDone.bind(this);
     this.handleClik = this.handleClik.bind(this);
   }
 
@@ -75,6 +75,7 @@ class App extends Component {
     fetch('/api/test')
     .then(res => res.json())
     .then(bruh => this.setState({ users: bruh }));
+    console.log(this.state.users);
   }
   
   // Handles event for removing a todo (removes wanted todo)

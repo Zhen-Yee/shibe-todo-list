@@ -3,8 +3,8 @@ var router = express.Router();
 
 router.get('/test', function(req, res) {
     res.json([
-        {bruh: 1,
-        lol: "jess"}
+        {bruh: "this is a test",
+        lol: "test"}
     ]);
 })
 
