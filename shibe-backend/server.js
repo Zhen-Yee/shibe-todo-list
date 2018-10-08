@@ -9,26 +9,19 @@ var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
 var app = express();
 var routes = require('./routes/index');
-var mysql = require('mysql')
+var db = require('./db');
 
-var connection = mysql.createConnection({
-    host     : 'db-instance.cnzpquqwelgj.us-east-2.rds.amazonaws.com',
-    user     : 'michael',
-    password : 'michaeltang123',
-    database : 'zhen_todo'
-  });
+// var connection = mysql.createConnection({
+//     host     : 'db-instance.cnzpquqwelgj.us-east-2.rds.amazonaws.com',
+//     user     : 'michael',
+//     password : 'michaeltang123',
+//     database : 'zhen_todo'
+//   });
   
-connection.connect(function(err) {
-    if (err) throw err
-    console.log('You are now connected...')
-})
-
-// connection.query('SELECT * FROM zhen_todo.Users;', function (err, rows, fields) {
-//     // if (err) throw err
-
-//     console.log('The solution is: ', rows[0])
-// });
-// connection.end();
+// connection.connect(function(err) {
+//     if (err) throw err
+//     console.log('You are now connected...')
+// })
 
 // BodyParser Middleware
 app.use(bodyParser.json())
@@ -80,6 +73,15 @@ app.use(function (req, res, next) {
 
 app.use('/api', routes);
 app.set('port', (process.env.PORT || 3001));
-app.listen(3001, function() {
-    console.log('Server opened on port ' + app.get('port'));
-});
+
+// Connect to DB
+db.connect(function(err) {
+  if (err) {
+    console.log('Cannot connect to database.')
+    process.exit(1);
+  } else {
+    app.listen(3001, function() {
+      console.log('Server opened on port ' + app.get('port'));
+    });
+  }
+})
