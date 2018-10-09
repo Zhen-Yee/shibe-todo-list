@@ -23,12 +23,15 @@ class Navbar extends Component {
     }
 
     handleLogin() {
-        // where it handles login by sending current username and password state to backend
-        
+        fetch('/api/login',{
+            method:'post',
+            body: JSON.stringify({"username":"test", "password":"test"}),
+            headers:{'Content-Type': 'application/json'}
+        })
     }
 
     handleSignup() {
-
+        
     }
 
     // Handles all input changes in signup form

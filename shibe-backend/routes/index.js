@@ -32,10 +32,10 @@ router.get('/test', function(req, res) {
 passport.use('local-login', new LocalStrategy({passReqToCallback: true},
     function (req, username, password, done) {
       Users.getUser(username, function (err, user) {
-        consol.log('wtf')
+        console.log('wtf')
         if (err) return done(err)
         if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
-         User.comparePassword(password, user[0].password, function (err, isMatch) {
+         Users.comparePassword(password, user[0].password, function (err, isMatch) {
            if (err) throw err
            if (isMatch) {
              return done(null, user)
@@ -45,16 +45,17 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
          })
        })
     }
-  ))
+))
 
 // random
-router.post('/login/', function (req, res) {
+router.post('/login', function (req, res) {
     req.checkBody('username', 'Username is required').notEmpty()
     req.checkBody('password', 'Password is required').notEmpty()
     var errors = req.validationErrors()
     if (errors) {
         req.flash('loginMessage', errors[0].msg)
     } else {
+        console.log('logged in')
         passport.authenticate('local-login', {
         successRedirect: '/',
         failureRedirect: '/',
