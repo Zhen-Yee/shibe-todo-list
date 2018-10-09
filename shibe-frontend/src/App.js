@@ -16,10 +16,11 @@ class App extends Component {
       users: []
     };
 
+    // Handler binders
     this.handleClick = this.handleClick.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
-    //this.handleDone = this.handleDone.bind(this);
+    this.handleDone = this.handleDone.bind(this);
     this.handleClik = this.handleClik.bind(this);
   }
 
@@ -31,7 +32,7 @@ class App extends Component {
         title: this.state.todosToAdd,
         note: this.state.noteToAdd
       });
-      //todosListCopy[this.state.todosToAdd] = this.state.noteToAdd;
+      
       this.setState({
         todos: todosListCopy,
         todosToAdd: "",
@@ -58,17 +59,19 @@ class App extends Component {
   // Handles check event from checkbox. When checkbox is checked, it will fetch shibe img from api
   // and store it in the state.
   // Makes a copy of the todos that are done and set it's value to true (this is to prevent from user to check the checkbox multipletime)
-  // handleDone(index) {
-  //   let todosDone = this.state.todoDone.slice();
-  //   todosDone[index] = true;
-  //   fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
-  //   .then(res => res.json())
-  //   .then(json => this.setState({
-  //       shibaImg: json,
-  //       todoDone: todosDone
-  //     })
-  //   );
-  // }
+  handleDone(index) {
+    let todosDone = this.state.todoDone.slice();
+    todosDone[index] = true;
+    fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+    .then(res => res.json())
+    .then(json => this.setState({
+        shibaImg: json,
+        todoDone: todosDone
+      })
+    );
+  }
+
+  // Handler for test route
   handleClik(index) {
     let todosDone = this.state.todoDone.slice();
     todosDone[index] = true;
@@ -99,6 +102,7 @@ class App extends Component {
       <div className="App">
         <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleClick}></AddTodo>
         <br />
+        {/* TEST button to call test route */}
         <Button onClick={this.handleClik}>sad</Button>
         <Card.Group>{listOfTodos}</Card.Group>
       </div>

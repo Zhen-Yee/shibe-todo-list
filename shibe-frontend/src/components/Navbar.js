@@ -23,6 +23,7 @@ class Navbar extends Component {
     }
 
     handleLogin() {
+        // where it handles login by sending current username and password state to backend
         
     }
 
