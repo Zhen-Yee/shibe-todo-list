@@ -11,7 +11,8 @@ class Navbar extends Component {
             username: '',
             password: '',
             email: '',
-            phone: ''
+            phone: '',
+            loggedIn: false
         }
 
         this.handleLogin = this.handleLogin.bind(this);
@@ -25,13 +26,15 @@ class Navbar extends Component {
     handleLogin() {
         fetch('/api/login',{
             method:'post',
-            body: JSON.stringify({"username":"test", "password":"test"}),
+            body: JSON.stringify({"username": this.state.username, "password": this.state.password}),
             headers:{'Content-Type': 'application/json'}
         })
+        .then(res => res.json)
+        .then(on => console.log(on));
     }
 
     handleSignup() {
-        
+
     }
 
     // Handles all input changes in signup form

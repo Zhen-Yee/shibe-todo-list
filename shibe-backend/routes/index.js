@@ -20,7 +20,7 @@ router.get('/test', function(req, res) {
         {bruh: "this is a test",
         lol: "test"}
     ]);
-    Users.getUser('test', function(err, user) {
+    Users.getUser('s', function(err, user) {
         if (err) return err
         if (user[0].username === 'test') 
             b = true;
@@ -28,26 +28,8 @@ router.get('/test', function(req, res) {
     }) ;
 })
 
-// random
-passport.use('local-login', new LocalStrategy({passReqToCallback: true},
-    function (req, username, password, done) {
-      Users.getUser(username, function (err, user) {
-        console.log('wtf')
-        if (err) return done(err)
-        if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
-         Users.comparePassword(password, user[0].password, function (err, isMatch) {
-           if (err) throw err
-           if (isMatch) {
-             return done(null, user)
-           } else {
-             return done(null, false, req.flash('loginMessage', 'Invalid password'))
-           }
-         })
-       })
-    }
-))
 
-// random
+// Login route
 router.post('/login', function (req, res) {
     req.checkBody('username', 'Username is required').notEmpty()
     req.checkBody('password', 'Password is required').notEmpty()
@@ -55,14 +37,36 @@ router.post('/login', function (req, res) {
     if (errors) {
         req.flash('loginMessage', errors[0].msg)
     } else {
-        console.log('logged in')
-        passport.authenticate('local-login', {
-        successRedirect: '/',
-        failureRedirect: '/',
-        failureFlash: true
+        passport.authenticate('local-login', {  // Goes to Login Authenticator
+            successRedirect: '/',
+            failureRedirect: '/',
+            failureFlash: true
         })(req, res)
     }
 })
+
+// Login authenticator
+passport.use('local-login', new LocalStrategy({passReqToCallback: true},
+    function (req, username, password, done) {
+      Users.getUser(username, function (err, user) {
+        console.log('wtf')
+        if (err) return done(err)
+        if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
+        console.log(password + ' ' + user[0].password)
+         Users.comparePassword(password, user[0].password, function (err, isMatch) {
+           if (err) throw err
+           console.log('jaja')
+           if (isMatch) {
+                console.log('done');
+                return done(null, user)
+           } else {
+                console.log('elsoelosl')
+                return done(null, false, req.flash('loginMessage', 'Invalid password'))
+           }
+         })
+       })
+    }
+))
 
 // Getter to validate but does NOT user passport => aka no session
 router.get('/login/:username/:pw', function(req, res) {
