@@ -77,5 +77,51 @@ router.get('/login/:username/:pw', function(req, res) {
     console.log(us);
 })
 
+// Signup Route
+router.post('/signup', function (req, res) {
+    req.checkBody('username', 'Username is required').notEmpty()
+    req.checkBody('email', 'Email is required').notEmpty()
+    req.checkBody('email', 'Email is not valid').isEmail()
+    req.checkBody('password', 'Password is required').notEmpty()
+    req.checkBody('phone', 'Phone is required').notEmpty()
+    var errors = req.validationErrors()
+
+    if (errors) {
+        req.flash('signupMessage', errors[0].msg)
+    } else {
+        passport.authenticate('local-signup', {
+            successRedirect: '/',
+            failureRedirect: '/',
+            failureFlash: true
+        })(req, res)
+    }
+})
+
+// Signup Authenticator
+passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
+    function (req, username, password, done) {
+      Users.getUser(username, function (err, user) {
+        if (err) return done(err)
+        if (user) {
+          return done(null, false, req.flash('signupMessage', 'Username already in use'))
+        } else {
+          console.log('ding');
+          var newUser = new User({
+            username: username,
+            email: req.email,
+            password: password
+          })
+          Users.createUser(newUser, function (err, user) {
+            if (err) console.log(err)
+          })
+          req.login(newUser, function (err) {
+            if (err) throw err
+          })
+          return done(null, newUser)
+        }
+      })
+    }
+  ))
+
 
 module.exports = router;
