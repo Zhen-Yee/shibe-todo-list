@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+// var Sequelize = require('sequelize')
 
 var state = {
     pool: null,
@@ -17,6 +18,25 @@ exports.connect = function(done) {
     done()
 }
 
+// var config = {
+//     host: 'db-instance.cnzpquqwelgj.us-east-2.rds.amazonaws.com',
+//     dialect: 'mysql', 
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         acquire: 30000,
+//         idle: 10000
+//     },
+//     operatorAliases: false
+// }
+
 exports.get = function() {
     return state.pool
 }
+
+// exports.sequelize = new Sequelize(
+//     'zhen_todo',
+//     'michael',
+//     'michaeltang123',
+//     config
+// );

@@ -2,14 +2,15 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
-var Users = require('../models/users.js')
+var User = require('../models/user.js')
+var db = require('../db')
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id)
+    done(null, user.username)
   })
   
 passport.deserializeUser(function (userName, done) {
-    Users.getUser(id, function (err, user) {
+    User.getUser(user, function (err, user) {
         done(err, user[0].username)
     })
 })
@@ -20,7 +21,7 @@ router.get('/test', function(req, res) {
         {bruh: "this is a test",
         lol: "test"}
     ]);
-    Users.getUser('s', function(err, user) {
+    User.getUser('s', function(err, user) {
         if (err) return err
         if (user[0].username === 'test') 
             b = true;
@@ -28,8 +29,9 @@ router.get('/test', function(req, res) {
     }) ;
 })
 
-
+// *******************
 // Login route
+// *******************
 router.post('/login', function (req, res) {
     req.checkBody('username', 'Username is required').notEmpty()
     req.checkBody('password', 'Password is required').notEmpty()
@@ -48,19 +50,17 @@ router.post('/login', function (req, res) {
 // Login authenticator
 passport.use('local-login', new LocalStrategy({passReqToCallback: true},
     function (req, username, password, done) {
-      Users.getUser(username, function (err, user) {
-        console.log('wtf')
+      User.getUser(username, function (err, user) {
         if (err) return done(err)
         if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
-        console.log(password + ' ' + user[0].password)
-         Users.comparePassword(password, user[0].password, function (err, isMatch) {
+        //console.log(password + ' ' + user[0].password)
+         User.comparePassword(password, user[0].password, function (err, isMatch) {
            if (err) throw err
-           console.log('jaja')
            if (isMatch) {
-                console.log('done');
+                console.log('Login');
                 return done(null, user)
            } else {
-                console.log('elsoelosl')
+                console.log('Didnt log in')
                 return done(null, false, req.flash('loginMessage', 'Invalid password'))
            }
          })
@@ -77,7 +77,9 @@ router.get('/login/:username/:pw', function(req, res) {
     console.log(us);
 })
 
+// *******************
 // Signup Route
+// *******************
 router.post('/signup', function (req, res) {
     req.checkBody('username', 'Username is required').notEmpty()
     req.checkBody('email', 'Email is required').notEmpty()
@@ -100,20 +102,23 @@ router.post('/signup', function (req, res) {
 // Signup Authenticator
 passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
     function (req, username, password, done) {
-      Users.getUser(username, function (err, user) {
+      User.getUser(username, function (err, user) {
         if (err) return done(err)
-        if (user) {
+        if (user[0] !== undefined) {
           return done(null, false, req.flash('signupMessage', 'Username already in use'))
         } else {
           console.log('ding');
-          var newUser = new User({
-            username: username,
-            email: req.email,
-            password: password
-          })
-          Users.createUser(newUser, function (err, user) {
+          var newUser = {
+            username: req.body.username,
+            password: password,
+            email: req.body.email,
+            phone: req.body.phone
+          }
+          User.signupUser(newUser, function (err, user) {
             if (err) console.log(err)
           })
+        //   let b = db.get().query('SELECT * FROM zhen_todo.Users WHERE username = aa')
+        //   console.log(b)
           req.login(newUser, function (err) {
             if (err) throw err
           })
