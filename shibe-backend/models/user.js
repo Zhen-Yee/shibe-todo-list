@@ -49,7 +49,7 @@ var bcrypt = require('bcryptjs')
 exports.getUser = function(userName, done) {
     db.get().query('SELECT * FROM zhen_todo.Users WHERE username = ?', userName, function (err, rows) {
         if (err) return done(err);
-        // console.log(rows[0] === undefined)
+        if (rows.length === 0) return done(err);
         done(null, rows);
     })
 }

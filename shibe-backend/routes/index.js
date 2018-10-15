@@ -40,10 +40,9 @@ router.post('/login', function (req, res) {
         req.flash('loginMessage', errors[0].msg)
     } else {
         passport.authenticate('local-login', {  // Goes to Login Authenticator
-            successRedirect: '/',
-            failureRedirect: '/',
             failureFlash: true
         })(req, res)
+      res.send(true);
     }
 })
 
@@ -53,7 +52,6 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
       User.getUser(username, function (err, user) {
         if (err) return done(err)
         if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
-        //console.log(password + ' ' + user[0].password)
          User.comparePassword(password, user[0].password, function (err, isMatch) {
            if (err) throw err
            if (isMatch) {

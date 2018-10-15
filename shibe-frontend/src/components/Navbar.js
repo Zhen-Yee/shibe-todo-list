@@ -23,14 +23,14 @@ class Navbar extends Component {
         this.handlePhoneChange = this.handlePhoneChange.bind(this);
     }
 
-    handleLogin() {
+     handleLogin() {
         fetch('/api/login',{
             method:'post',
             body: JSON.stringify({"username": this.state.username, "password": this.state.password}),
             headers:{'Content-Type': 'application/json'}
         })
-        .then(res => res.json)
-        .then(on => console.log(on));
+        .then(res => res.json())
+        .then(on => this.setState({loggedIn: true}));
     }
 
     handleSignup() {
