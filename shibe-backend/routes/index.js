@@ -21,7 +21,7 @@ router.get('/test', function(req, res) {
         {bruh: "this is a test",
         lol: "test"}
     ]);
-    User.getUser('s', function(err, user) {
+    User.getUser('az', function(err, user) {
         if (err) return err
         if (user[0].username === 'test') 
             b = true;
@@ -58,7 +58,7 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
            if (err) throw err
            if (isMatch) {
                 console.log('Login');
-                return done(null, user)
+                return true
            } else {
                 console.log('Didnt log in')
                 return done(null, false, req.flash('loginMessage', 'Invalid password'))
@@ -122,7 +122,7 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
           req.login(newUser, function (err) {
             if (err) throw err
           })
-          return done(null, newUser)
+          return true
         }
       })
     }

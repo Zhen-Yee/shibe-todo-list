@@ -5,7 +5,7 @@ export const Signup = props => (
     <Modal trigger={<Button>Signup</Button>}>
         <Modal.Header>Signup</Modal.Header>
         <Modal.Content>
-            <Form onSubmit={props.submit}>
+            <Form onSubmit={props.signup}>
                 <Form.Field>
                     <label>Username</label>
                     <input onChange={props.usernameChange} placeholder='Username' name="username"/>

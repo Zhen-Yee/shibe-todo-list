@@ -34,7 +34,18 @@ class Navbar extends Component {
     }
 
     handleSignup() {
-
+        fetch('/api/signup',{
+            method:'post',
+            body: JSON.stringify({
+                "username": this.state.username, 
+                "password": this.state.password,
+                "email": this.state.email,
+                "phone": this.state.phone
+            }),
+            headers:{'Content-Type': 'application/json'}
+        })
+        .then(res => console.log(res))
+        .then(on => console.log(on));
     }
 
     // Handles all input changes in signup form
@@ -71,7 +82,7 @@ class Navbar extends Component {
             </Menu.Item>
         
             <Menu.Item>
-              <Signup usernameChange={this.handleUsernameChange} pwChange={this.handlePasswordChange} emailChange={this.handleEmailChange} phoneChange={this.handlePhoneChange}></Signup>
+              <Signup signup={this.handleSignup} usernameChange={this.handleUsernameChange} pwChange={this.handlePasswordChange} emailChange={this.handleEmailChange} phoneChange={this.handlePhoneChange}></Signup>
             </Menu.Item>
         
           </Menu>
