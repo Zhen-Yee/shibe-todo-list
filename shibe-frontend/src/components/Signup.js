@@ -1,8 +1,8 @@
 import React from 'react';
-import { Form, Modal, Button } from 'semantic-ui-react';
+import {Form, Modal, Button} from 'semantic-ui-react';
 
 export const Signup = props => (
-    <Modal onClose={props.modal} open={props.bool} >
+    <Modal onClose={props.toggleModal} open={props.isModal}>
         <Modal.Header>Signup</Modal.Header>
         <Modal.Content>
             <Form onSubmit={props.signup}>
@@ -12,18 +12,30 @@ export const Signup = props => (
                 </Form.Field>
                 <Form.Field>
                     <label>Password</label>
-                    <input onChange={props.pwChange} placeholder='Password' type='password' name="pw" />
+                    <input
+                        onChange={props.pwChange}
+                        placeholder='Password'
+                        type='password'
+                        name="pw"/>
                 </Form.Field>
                 <Form.Field>
                     <label>E-mail</label>
-                    <input onChange={props.emailChange} placeholder='E-mail' type="email" name="email" />
+                    <input
+                        onChange={props.emailChange}
+                        placeholder='E-mail'
+                        type="email"
+                        name="email"/>
                 </Form.Field>
                 <Form.Field>
                     <label>Phone</label>
-                    <input onChange={props.phoneChange} placeholder='Phone' type='tel' name="phone" />
+                    <input
+                        onChange={props.phoneChange}
+                        placeholder='Phone'
+                        type='tel'
+                        name="phone"/>
                 </Form.Field>
                 <Button type='submit'>Submit</Button>
             </Form>
-        </Modal.Content> 
-  </Modal>
+        </Modal.Content>
+    </Modal>
 )
