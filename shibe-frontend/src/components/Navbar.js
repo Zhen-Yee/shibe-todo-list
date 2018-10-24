@@ -101,14 +101,17 @@ class Navbar extends Component {
     }
 
     render() {
+        const login = this.state.loggedIn
+            ? <p>
+                    Welcome {this.state.username}</p>
+            : <Button onClick={this.toggleLoginModal}>Login</Button>;
         return (
             <Menu>
                 <Menu.Item>
                     <Button>Home</Button>
                 </Menu.Item>
-
                 <Menu.Item>
-                    <Button onClick={this.toggleLoginModal}>Login</Button>
+                    {login}
                     <Login
                         login={this.handleLogin}
                         toggleModal={this.toggleLoginModal}
