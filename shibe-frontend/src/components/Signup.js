@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Modal, Button } from 'semantic-ui-react';
 
 export const Signup = props => (
-    <Modal trigger={<Button>Signup</Button>}>
+    <Modal onClose={props.modal} open={props.bool} >
         <Modal.Header>Signup</Modal.Header>
         <Modal.Content>
             <Form onSubmit={props.signup}>

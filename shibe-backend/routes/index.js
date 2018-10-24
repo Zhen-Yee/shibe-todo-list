@@ -94,6 +94,7 @@ router.post('/signup', function (req, res) {
             failureRedirect: '/',
             failureFlash: true
         })(req, res)
+        res.send(true);
     }
 })
 
@@ -102,7 +103,7 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
     function (req, username, password, done) {
       User.getUser(username, function (err, user) {
         if (err) return done(err)
-        if (user[0] !== undefined) {
+        if (user !== undefined) {
           return done(null, false, req.flash('signupMessage', 'Username already in use'))
         } else {
           console.log('ding');
@@ -120,7 +121,6 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
           req.login(newUser, function (err) {
             if (err) throw err
           })
-          return true
         }
       })
     }

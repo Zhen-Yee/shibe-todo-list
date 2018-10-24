@@ -4,6 +4,7 @@ import { Login } from './Login';
 import { Signup } from './Signup';
 
 class Navbar extends Component {
+    x;
     constructor() {
         super();
 
@@ -12,7 +13,8 @@ class Navbar extends Component {
             password: '',
             email: '',
             phone: '',
-            loggedIn: false
+            loggedIn: false,
+            modal: false
         }
 
         this.handleLogin = this.handleLogin.bind(this);
@@ -30,7 +32,13 @@ class Navbar extends Component {
             headers:{'Content-Type': 'application/json'}
         })
         .then(res => res.json())
-        .then(on => this.setState({loggedIn: true}));
+        .then(on => 
+            {
+                if(on){
+                    this.toggleModal();
+                }
+            }
+            );
     }
 
     handleSignup() {
@@ -44,8 +52,15 @@ class Navbar extends Component {
             }),
             headers:{'Content-Type': 'application/json'}
         })
-        .then(res => console.log(res))
-        .then(on => console.log(on));
+        .then(res => res.json())
+        .then(on => {
+            if(on){
+             this.toggleModal();
+            } else {
+                console.log("error");
+            }
+        }
+        );
     }
 
     // Handles all input changes in signup form
@@ -69,6 +84,11 @@ class Navbar extends Component {
             phone: e.target.value
         })
     }
+    toggleModal = () => {
+        this.setState((state) => ({
+            modal: !state.modal
+          }));
+    }
 
     render() {
         return (
@@ -82,7 +102,8 @@ class Navbar extends Component {
             </Menu.Item>
         
             <Menu.Item>
-              <Signup signup={this.handleSignup} usernameChange={this.handleUsernameChange} pwChange={this.handlePasswordChange} emailChange={this.handleEmailChange} phoneChange={this.handlePhoneChange}></Signup>
+            <Button onClick={this.toggleModal}>Signup</Button>
+              <Signup signup={this.handleSignup} modal = {this.toggleModal} bool={this.state.modal} usernameChange={this.handleUsernameChange} pwChange={this.handlePasswordChange} emailChange={this.handleEmailChange} phoneChange={this.handlePhoneChange}></Signup>
             </Menu.Item>
         
           </Menu>
