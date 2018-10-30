@@ -4,6 +4,7 @@ var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
 var User = require('../models/user.js')
 var db = require('../db')
+var jwt = require("jsonwebtoken");
 
 passport.serializeUser(function (user, done) {
     done(null, user.username)
@@ -29,6 +30,10 @@ router.get('/test', function(req, res) {
     }) ;
 })
 
+router.get('/checktoken', function (req, res){
+    var decoded = jwt.verify(req, 'log');
+})
+
 // *******************
 // Login route
 // *******************
@@ -42,7 +47,13 @@ router.post('/login', function (req, res) {
         passport.authenticate('local-login', {  // Goes to Login Authenticator
             failureFlash: true
         })(req, res)
-      res.send(true);
+        req.login(true, {session: false}, (err) => {
+            if (err){
+                res.send(err);
+            }
+        })
+    var token = jwt.sign(req.body, 'log');
+    res.send({logged: true, jwt: token});
     }
 })
 
@@ -56,7 +67,7 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
            if (err) throw err
            if (isMatch) {
                 console.log('Login');
-                return true
+                return true;
            } else {
                 console.log('Didnt log in')
                 return done(null, false, req.flash('loginMessage', 'Invalid password'))
@@ -70,9 +81,6 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
 router.get('/login/:username/:pw', function(req, res) {
     var us = req.params.username;
     var p = req.params.pw;
-
-    console.log(p);
-    console.log(us);
 })
 
 // *******************

@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {Button, Menu} from 'semantic-ui-react'
 import {Login} from './Login';
 import {Signup} from './Signup';
+// import {jwt} from 'jsonwebtoken';
+var jwt = require("jsonwebtoken");
 
 class Navbar extends Component {
     x;
@@ -43,14 +45,16 @@ class Navbar extends Component {
             method: 'post',
             body: JSON.stringify({"username": this.state.username, "password": this.state.password}),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('jwt')
                 }
             })
             .then(res => res.json())
             .then(on => {
-                if (on) {
+                if (on.logged) {
+                    localStorage.setItem("jwt", on.jwt);
                     this.toggleLoginModal();
-                    this.setState({loggedIn: on})
+                    this.setState({loggedIn: on.logged})
                 }
             });
     }
@@ -87,6 +91,11 @@ class Navbar extends Component {
         this.setState({phone: e.target.value})
     }
 
+    handleLogout = () => {
+        localStorage.clear();
+        this.setState({username: '', password: '', loggedIn: false})
+    }
+
     // so weird, it doesnt work if you do toggleSignupModal() {}
     toggleSignupModal = () => {
         this.setState({
@@ -100,11 +109,34 @@ class Navbar extends Component {
         })
     }
 
+    componentDidMount() {
+        // after component is mounted, check if user is logged on already
+        if (localStorage.getItem('jwt') !== null) {
+            var token = localStorage.getItem('jwt');
+            var user = jwt.verify(token, 'log');
+            fetch('/api/login', {
+                method: 'post',
+                body: JSON.stringify({"username": user.username, "password": user.password}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(auth => {
+                    this.setState({username: user.username, password: user.password, loggedIn: auth.logged});
+                });
+        }
+    }
+
     render() {
         const login = this.state.loggedIn
             ? <p>
                     Welcome {this.state.username}</p>
             : <Button onClick={this.toggleLoginModal}>Login</Button>;
+        const loggedIn = this.state.loggedIn
+            ? <Button onClick={this.handleLogout}>Logout
+                </Button>
+            : <Button onClick={this.toggleSignupModal}>Signup</Button>
         return (
             <Menu>
                 <Menu.Item>
@@ -119,9 +151,8 @@ class Navbar extends Component {
                         usernameChange={this.handleUsernameChange}
                         pwChange={this.handlePasswordChange}></Login>
                 </Menu.Item>
-
                 <Menu.Item>
-                    <Button onClick={this.toggleSignupModal}>Signup</Button>
+                    {loggedIn}
                     <Signup
                         signup={this.handleSignup}
                         toggleModal={this.toggleSignupModal}
