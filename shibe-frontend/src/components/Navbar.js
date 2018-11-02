@@ -123,7 +123,9 @@ class Navbar extends Component {
                 })
                 .then(res => res.json())
                 .then(auth => {
+                    if(auth.logged){
                     this.setState({username: user.username, password: user.password, loggedIn: auth.logged});
+                    }
                 });
         }
     }
