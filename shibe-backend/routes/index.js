@@ -38,6 +38,8 @@ router.get('/checktoken', function (req, res){
 // Login route
 // *******************
 router.post('/login', function (req, res) {
+    var user = req.body;
+    var response = res;
     req.checkBody('username', 'Username is required').notEmpty()
     req.checkBody('password', 'Password is required').notEmpty()
     var errors = req.validationErrors()
@@ -46,14 +48,15 @@ router.post('/login', function (req, res) {
     } else {
         passport.authenticate('local-login', {  // Goes to Login Authenticator
             failureFlash: true
-        })(req, res)
-        req.login(true, {session: false}, (err) => {
-            if (err){
-                res.send(err);
+        }, function (req, res){
+            if(req){
+            // i want to use the req and the res at line 40
+            // if i do res.send it says res is undefined since
+            // the req and res at line 51 belongs to the done function at line 74/77
+            var token = jwt.sign(user, 'log');
+            response.send({logged: true, jwt: token});
             }
-        })
-    var token = jwt.sign(req.body, 'log');
-    res.send({logged: true, jwt: token});
+        })(req, res)
     }
 })
 
@@ -62,15 +65,16 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true},
     function (req, username, password, done) {
       User.getUser(username, function (err, user) {
         if (err) return done(err)
+        // this return when the user doesnt exists
         if (!user) return done(null, false, req.flash('loginMessage', 'No user found.'))
          User.comparePassword(password, user[0].password, function (err, isMatch) {
            if (err) throw err
            if (isMatch) {
                 console.log('Login');
-                return true;
+                return done(true);
            } else {
                 console.log('Didnt log in')
-                return done(null, false, req.flash('loginMessage', 'Invalid password'))
+                return done(null, false);
            }
          })
        })
