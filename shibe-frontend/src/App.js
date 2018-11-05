@@ -14,7 +14,8 @@ class App extends Component {
       todosToAdd: "",
       noteToAdd: "",
       todoDone: [],
-      user: ""
+      user: "",
+      username: ""
     };
 
     // Handler binders
@@ -50,6 +51,7 @@ class App extends Component {
         todosToAdd: "",
         noteToAdd: ""
       });
+      console.log(this.state.todos);
     } else {
       alert('Nothing added to todos!!!');
     }
@@ -102,7 +104,27 @@ class App extends Component {
     });
   }
 
+  componentWillMount() {
+    let token = localStorage.getItem('jwt');
+    if (token !== null) {
+      let user = jwt.verify(token, 'log');
+      fetch(`/api/getTodos/${user.username}`)
+        .then(res => res.json())
+        .then(json => {
+          json.forEach(element => {
+            this.state.todos.push(JSON.parse(element.todo));
+          });
+        })
+    } else { 
+      console.log('Not logged in');
+    }
+  }
+
   render() {
+    // let token = localStorage.getItem('jwt');
+    // if (token !== null) {
+    //   let user = jwt.verify(token, 'log');
+    // }
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
