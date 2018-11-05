@@ -75,7 +75,13 @@ exports.signupUser = function(newUser, callback){
             })
         })
     })
-    
 }
 
+exports.addTodo = function(username, todo, done) {
+   db.get().query(`INSERT INTO zhen_todo.Todos (username, todo) VALUES ('${username}', '${todo}')`, function (err, results) {
+       if (err) throw err;
+       console.log('Todo added.');
+   })
+}
+    
 // module.exports = UserModel;

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Card, Button } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
+var jwt = require("jsonwebtoken");
 
 class App extends Component {
   constructor(props) {
@@ -13,22 +14,33 @@ class App extends Component {
       todosToAdd: "",
       noteToAdd: "",
       todoDone: [],
-      users: []
+      user: ""
     };
 
     // Handler binders
-    this.handleClick = this.handleClick.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
     this.handleDone = this.handleDone.bind(this);
-    this.handleClik = this.handleClik.bind(this);
+    // this.handleClik = this.handleClik.bind(this);
   }
 
   // Handles onClick event from the "Add" button to push the todo into the list
-  handleClick() {
+  handleAdd() {
     if (this.state.todosToAdd !== '') {
+      var token = localStorage.getItem('jwt');
+      var user = jwt.verify(token, 'log');
+
+      fetch('/api/addTodo', {
+        method: 'post',
+        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+
       let todosListCopy = this.state.todos.slice();
-      todosListCopy.push({ 
+      todosListCopy.push({
         title: this.state.todosToAdd,
         note: this.state.noteToAdd
       });
@@ -71,15 +83,15 @@ class App extends Component {
     );
   }
 
-  // Handler for test route
-  handleClik(index) {
-    let todosDone = this.state.todoDone.slice();
-    todosDone[index] = true;
-    fetch('/api/test')
-    .then(res => res.json())
-    .then(bruh => this.setState({ users: bruh }));
-    console.log(this.state.users);
-  }
+  // // Handler for test route
+  // handleClik(index) {
+  //   let todosDone = this.state.todoDone.slice();
+  //   todosDone[index] = true;
+  //   fetch('/api/test')
+  //   .then(res => res.json())
+  //   .then(bruh => this.setState({ users: bruh }));
+  //   console.log(this.state.users);
+  // }
   
   // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
@@ -100,10 +112,10 @@ class App extends Component {
 
     return (
       <div className="App">
-        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleClick}></AddTodo>
+        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
         <br />
         {/* TEST button to call test route */}
-        <Button onClick={this.handleClik}>sad</Button>
+        {/* <Button onClick={this.handleClik}>sad</Button> */}
         <Card.Group>{listOfTodos}</Card.Group>
       </div>
     );

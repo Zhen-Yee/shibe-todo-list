@@ -30,10 +30,6 @@ router.get('/test', function(req, res) {
     }) ;
 })
 
-router.get('/checktoken', function (req, res){
-    var decoded = jwt.verify(req, 'log');
-})
-
 // *******************
 // Login route
 // *******************
@@ -137,6 +133,15 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback: true},
       })
     }
   ))
+
+  router.post('/addTodo', function (req, res) {
+    console.log(req.body);
+    var username = req.body[0];
+    var todo = JSON.stringify(req.body[1]);
+    User.addTodo(username, todo, function (err) {
+        if (err) return err;
+    });
+  })
 
 
 module.exports = router;

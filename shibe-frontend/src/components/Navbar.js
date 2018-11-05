@@ -1,12 +1,11 @@
-import React, {Component} from 'react'
-import {Button, Menu} from 'semantic-ui-react'
-import {Login} from './Login';
-import {Signup} from './Signup';
+import React, { Component } from 'react'
+import { Button, Menu } from 'semantic-ui-react'
+import { Login } from './Login';
+import { Signup } from './Signup';
 // import {jwt} from 'jsonwebtoken';
 var jwt = require("jsonwebtoken");
 
 class Navbar extends Component {
-    x;
     constructor() {
         super();
 
@@ -43,18 +42,18 @@ class Navbar extends Component {
     handleLogin() {
         fetch('/api/login', {
             method: 'post',
-            body: JSON.stringify({"username": this.state.username, "password": this.state.password}),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem('jwt')
-                }
-            })
+            body: JSON.stringify({ "username": this.state.username, "password": this.state.password }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('jwt')
+            }
+        })
             .then(res => res.json())
             .then(on => {
                 if (on.logged) {
                     localStorage.setItem("jwt", on.jwt);
                     this.toggleLoginModal();
-                    this.setState({loggedIn: on.logged})
+                    this.setState({ loggedIn: on.logged })
                 }
             });
     }
@@ -62,11 +61,11 @@ class Navbar extends Component {
     handleSignup() {
         fetch('/api/signup', {
             method: 'post',
-            body: JSON.stringify({"username": this.state.username, "password": this.state.password, "email": this.state.email, "phone": this.state.phone}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            body: JSON.stringify({ "username": this.state.username, "password": this.state.password, "email": this.state.email, "phone": this.state.phone }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(on => {
                 if (on) {
@@ -79,21 +78,21 @@ class Navbar extends Component {
 
     // Handles all input changes in signup form
     handleUsernameChange(e) {
-        this.setState({username: e.target.value})
+        this.setState({ username: e.target.value })
     }
     handlePasswordChange(e) {
-        this.setState({password: e.target.value})
+        this.setState({ password: e.target.value })
     }
     handleEmailChange(e) {
-        this.setState({email: e.target.value})
+        this.setState({ email: e.target.value })
     }
     handlePhoneChange(e) {
-        this.setState({phone: e.target.value})
+        this.setState({ phone: e.target.value })
     }
 
     handleLogout = () => {
         localStorage.clear();
-        this.setState({username: '', password: '', loggedIn: false})
+        this.setState({ username: '', password: '', loggedIn: false })
     }
 
     // so weird, it doesnt work if you do toggleSignupModal() {}
@@ -116,15 +115,15 @@ class Navbar extends Component {
             var user = jwt.verify(token, 'log');
             fetch('/api/login', {
                 method: 'post',
-                body: JSON.stringify({"username": user.username, "password": user.password}),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
+                body: JSON.stringify({ "username": user.username, "password": user.password }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then(res => res.json())
                 .then(auth => {
-                    if(auth.logged){
-                    this.setState({username: user.username, password: user.password, loggedIn: auth.logged});
+                    if (auth.logged) {
+                        this.setState({ username: user.username, password: user.password, loggedIn: auth.logged });
                     }
                 });
         }
@@ -133,7 +132,7 @@ class Navbar extends Component {
     render() {
         const login = this.state.loggedIn
             ? <p>
-                    Welcome {this.state.username}</p>
+                Welcome {this.state.username}</p>
             : <Button onClick={this.toggleLoginModal}>Login</Button>;
         const loggedIn = this.state.loggedIn
             ? <Button onClick={this.handleLogout}>Logout
