@@ -19,24 +19,12 @@ class Navbar extends Component {
             loginModal: false
         }
 
-        this.handleLogin = this
-            .handleLogin
-            .bind(this);
-        this.handleSignup = this
-            .handleSignup
-            .bind(this);
-        this.handleUsernameChange = this
-            .handleUsernameChange
-            .bind(this);
-        this.handlePasswordChange = this
-            .handlePasswordChange
-            .bind(this);
-        this.handleEmailChange = this
-            .handleEmailChange
-            .bind(this);
-        this.handlePhoneChange = this
-            .handlePhoneChange
-            .bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.handleSignup = this.handleSignup.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handlePhoneChange = this.handlePhoneChange.bind(this);
     }
 
     handleLogin() {
@@ -56,6 +44,9 @@ class Navbar extends Component {
                     this.setState({ loggedIn: on.logged })
                 }
             });
+
+            // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
+            window.location.reload();
     }
 
     handleSignup() {
@@ -127,6 +118,7 @@ class Navbar extends Component {
                     }
                 });
         }
+        
     }
 
     render() {

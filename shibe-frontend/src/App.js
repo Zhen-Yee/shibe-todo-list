@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Card } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
-var jwt = require("jsonwebtoken");
+//import { Navbar } from './components/Navbar';
+import jwt from 'jsonwebtoken';
 
 class App extends Component {
   constructor(props) {
@@ -76,7 +77,7 @@ class App extends Component {
   handleDone(index) {
     let todosDone = this.state.todoDone.slice();
     todosDone[index] = true;
-    fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+    fetch('https://cors-anywhere.herokuapp.com/http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
     .then(res => res.json())
     .then(json => this.setState({
         shibaImg: json,
@@ -104,6 +105,7 @@ class App extends Component {
     });
   }
 
+  // Loads user todos when page loads, if user is logged in
   componentWillMount() {
     let token = localStorage.getItem('jwt');
     if (token !== null) {
@@ -111,8 +113,12 @@ class App extends Component {
       fetch(`/api/getTodos/${user.username}`)
         .then(res => res.json())
         .then(json => {
+          let todosToAdd = this.state.todos.slice();
           json.forEach(element => {
-            this.state.todos.push(JSON.parse(element.todo));
+            todosToAdd.push(JSON.parse(element.todo));
+          });
+          this.setState({
+            todos: todosToAdd
           });
         })
     } else { 
@@ -121,10 +127,6 @@ class App extends Component {
   }
 
   render() {
-    // let token = localStorage.getItem('jwt');
-    // if (token !== null) {
-    //   let user = jwt.verify(token, 'log');
-    // }
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
