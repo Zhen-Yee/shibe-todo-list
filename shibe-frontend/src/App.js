@@ -125,12 +125,16 @@ class App extends Component {
   // Loads user todos when page loads, if user is logged in
   componentWillMount() {
     let token = localStorage.getItem('jwt');
-    let todosDone = localStorage.getItem('todosDone').split('},{').join('} {').split(' ');
+    let todosDone = localStorage.getItem('todosDone');
+    let todosDoneArr = [];
     if (token !== null) {
+      if (todosDone !== null) {
+        todosDoneArr = todosDone.split('},{').join('} {').split(' ');
+      }
       let user = jwt.verify(token, 'log');
       fetch('/api/updateTodos', {
         method: 'post',
-        body: JSON.stringify([user.username, todosDone]),
+        body: JSON.stringify([user.username, todosDoneArr]),
         headers: {
           'Content-Type': 'application/json',
         }

@@ -155,14 +155,20 @@ router.post('/deleteTodo', function (req, res) {
 })
 
 router.post('/updateTodos', function (req, res) {
+    console.log(req.body)
     var username = req.body[0];
     var todosDone = req.body[1];
-    console.log(todosDone);
-    todosDone.forEach(todoDone => {
-        User.deleteTodo(username, todoDone, function (err) {
-            if (err) throw err;
-        })
-    });
+    // console.log(todosDone);
+    if (Array.isArray(todosDone) || todosDone.length) {
+        todosDone.forEach(todoDone => {
+            User.deleteTodo(username, todoDone, function (err) {
+                if (err) throw err;
+            })
+        });
+    } else {
+        console.log('Nothing to update.')
+    }
+    
 })
 
 router.get('/getTodos/:username', function (req, res) {

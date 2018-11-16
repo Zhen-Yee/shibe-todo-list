@@ -84,8 +84,23 @@ export class Navbar extends Component {
     }
 
     handleLogout = () => {
-        localStorage.clear();
-        this.setState({ username: '', password: '', loggedIn: false });
+        let todosDone = localStorage.getItem('todosDone');
+        let token = localStorage.getItem('jwt');
+        let todosDoneArr = [];
+        let user = jwt.verify(token, 'log');
+        if (todosDone !== null) {
+            todosDoneArr = todosDone.split('},{').join('} {').split(' ');
+        }
+        fetch('/api/updateTodos', {
+            method: 'post',
+            body: JSON.stringify([user.username, todosDoneArr]),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+
+        localStorage.clear()
+        this.setState({ username: '', password: '', loggedIn: false })
         window.location.reload();
     }
 
