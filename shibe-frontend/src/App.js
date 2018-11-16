@@ -26,37 +26,6 @@ class App extends Component {
     this.handleDone = this.handleDone.bind(this);
     // this.handleClik = this.handleClik.bind(this);
   }
-
-  // Handles onClick event from the "Add" button to push the todo into the list
-  handleAdd() {
-    if (this.state.todosToAdd !== '') {
-      var token = localStorage.getItem('jwt');
-      var user = jwt.verify(token, 'log');
-
-      fetch('/api/addTodo', {
-        method: 'post',
-        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
-        headers: {
-            'Content-Type': 'application/json',
-        }
-      })
-
-      let todosListCopy = this.state.todos.slice();
-      todosListCopy.push({
-        title: this.state.todosToAdd,
-        note: this.state.noteToAdd
-      });
-      
-      this.setState({
-        todos: todosListCopy,
-        todosToAdd: "",
-        noteToAdd: ""
-      });
-      console.log(this.state.todos);
-    } else {
-      alert('Nothing added to todos!!!');
-    }
-  }
   
   // Keeps track of user input to later add to the list of todos
   handleOnChange(e) {
@@ -95,12 +64,43 @@ class App extends Component {
   //   .then(bruh => this.setState({ users: bruh }));
   //   console.log(this.state.users);
   // }
-  
+  // Handles onClick event from the "Add" button to push the todo into the list
+
+  handleAdd() {
+    if (this.state.todosToAdd !== '') {
+      var token = localStorage.getItem('jwt');
+      var user = jwt.verify(token, 'log');
+
+      fetch('/api/addTodo', {
+        method: 'post',
+        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+
+      let todosListCopy = this.state.todos.slice();
+      todosListCopy.push({
+        title: this.state.todosToAdd,
+        note: this.state.noteToAdd
+      });
+      
+      this.setState({
+        todos: todosListCopy,
+        todosToAdd: "",
+        noteToAdd: ""
+      });
+      console.log(this.state.todos);
+    } else {
+      alert('Nothing added to todos!!!');
+    }
+  }
+
   // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
     var token = localStorage.getItem('jwt');
     var user = jwt.verify(token, 'log');
-    console.log(this.state.todos[index]);
+
     fetch('/api/deleteTodo', {
       method: 'post',
       body: JSON.stringify([user.username, this.state.todos[index]]),
