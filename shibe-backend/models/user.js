@@ -84,6 +84,13 @@ exports.addTodo = function(username, todo, done) {
    })
 }
 
+exports.deleteTodo = function(username, todo, done) {
+    db.get.query(`DELETE FROM zhen_todo.Todos WHERE username = '${username}' AND todo = '${todo}'`, function (err, results) {
+        if (err) throw err;
+        console.log('Todo deleted.')
+    })
+}
+
 exports.getTodos = function(username, done) {
     db.get().query('SELECT todo FROM zhen_todo.Todos WHERE username = ?', username, function (err, rows) {
         if (err) return done(err);
@@ -91,5 +98,6 @@ exports.getTodos = function(username, done) {
         done(null, rows); 
     })
 }
-    
+
+
 // module.exports = UserModel;

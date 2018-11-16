@@ -145,6 +145,14 @@ router.post('/addTodo', function (req, res) {
     });
 })
 
+router.post('/deleteTodo', function (req, res) {
+    var username = req.body[0];
+    var todo = JSON.stringify(req.body[1]);
+    User.deleteTodo(username, todo, function (err) {
+        if (err) return err;
+    });
+})
+
 router.get('/getTodos/:username', function (req, res) {
     var username = req.params.username;
     User.getTodos(username, function (err, todos) {
