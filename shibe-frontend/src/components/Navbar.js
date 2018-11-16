@@ -5,10 +5,9 @@ import { Signup } from './Signup';
 // import {jwt} from 'jsonwebtoken';
 var jwt = require("jsonwebtoken");
 
-class Navbar extends Component {
-    constructor() {
+export class Navbar extends Component {
+    constructor(props) {
         super();
-
         this.state = {
             username: '',
             password: '',
@@ -16,7 +15,7 @@ class Navbar extends Component {
             phone: '',
             loggedIn: false,
             signupModal: false,
-            loginModal: false
+            loginModal: false,
         }
 
         this.handleLogin = this.handleLogin.bind(this);
@@ -41,12 +40,15 @@ class Navbar extends Component {
                 if (on.logged) {
                     localStorage.setItem("jwt", on.jwt);
                     this.toggleLoginModal();
-                    this.setState({ loggedIn: on.logged })
+                    this.setState({ 
+                        loggedIn: on.logged,
+                    })
+                    window.location.reload();
                 }
             });
 
-            // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
-            window.location.reload();
+            // // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
+            // window.location.reload();
     }
 
     handleSignup() {
@@ -83,7 +85,8 @@ class Navbar extends Component {
 
     handleLogout = () => {
         localStorage.clear();
-        this.setState({ username: '', password: '', loggedIn: false })
+        this.setState({ username: '', password: '', loggedIn: false });
+        window.location.reload();
     }
 
     // so weird, it doesnt work if you do toggleSignupModal() {}
@@ -160,5 +163,3 @@ class Navbar extends Component {
         );
     }
 }
-
-export default Navbar;

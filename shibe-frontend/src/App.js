@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
-//import { Navbar } from './components/Navbar';
+import { Navbar } from './components/Navbar';
 import jwt from 'jsonwebtoken';
 
 class App extends Component {
@@ -118,7 +118,7 @@ class App extends Component {
             todosToAdd.push(JSON.parse(element.todo));
           });
           this.setState({
-            todos: todosToAdd
+            todos: todosToAdd,
           });
         })
     } else { 
@@ -136,6 +136,7 @@ class App extends Component {
 
     return (
       <div className="App">
+      <Navbar></Navbar>
         <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
         <br />
         {/* TEST button to call test route */}
