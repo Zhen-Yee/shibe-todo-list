@@ -75,7 +75,29 @@ exports.signupUser = function(newUser, callback){
             })
         })
     })
-    
 }
+
+exports.addTodo = function(username, todo, done) {
+   db.get().query(`INSERT INTO zhen_todo.Todos (username, todo) VALUES ('${username}', '${todo}')`, function (err, results) {
+       if (err) throw err;
+       console.log('Todo added.');
+   })
+}
+
+exports.deleteTodo = function(username, todo, done) {
+    db.get().query(`DELETE FROM zhen_todo.Todos WHERE username = '${username}' AND todo = '${todo}'`, function (err, results) {
+        if (err) throw err;
+        console.log('Todo deleted.')
+    })
+}
+
+exports.getTodos = function(username, done) {
+    db.get().query('SELECT todo FROM zhen_todo.Todos WHERE username = ?', username, function (err, rows) {
+        if (err) return done(err);
+        if (rows.length === 0) return done(err);
+        done(null, rows); 
+    })
+}
+
 
 // module.exports = UserModel;

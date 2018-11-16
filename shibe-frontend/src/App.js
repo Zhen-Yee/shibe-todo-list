@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Card, Button } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
+import { Navbar } from './components/Navbar';
+import jwt from 'jsonwebtoken';
 
 class App extends Component {
   constructor(props) {
@@ -13,34 +15,16 @@ class App extends Component {
       todosToAdd: "",
       noteToAdd: "",
       todoDone: [],
-      users: []
+      user: "",
+      username: ""
     };
 
     // Handler binders
-    this.handleClick = this.handleClick.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
     this.handleDone = this.handleDone.bind(this);
-    this.handleClik = this.handleClik.bind(this);
-  }
-
-  // Handles onClick event from the "Add" button to push the todo into the list
-  handleClick() {
-    if (this.state.todosToAdd !== '') {
-      let todosListCopy = this.state.todos.slice();
-      todosListCopy.push({ 
-        title: this.state.todosToAdd,
-        note: this.state.noteToAdd
-      });
-      
-      this.setState({
-        todos: todosListCopy,
-        todosToAdd: "",
-        noteToAdd: ""
-      });
-    } else {
-      alert('Nothing added to todos!!!');
-    }
+    // this.handleClik = this.handleClik.bind(this);
   }
   
   // Keeps track of user input to later add to the list of todos
@@ -62,7 +46,7 @@ class App extends Component {
   handleDone(index) {
     let todosDone = this.state.todoDone.slice();
     todosDone[index] = true;
-    fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+    fetch('https://cors-anywhere.herokuapp.com/http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
     .then(res => res.json())
     .then(json => this.setState({
         shibaImg: json,
@@ -71,23 +55,86 @@ class App extends Component {
     );
   }
 
-  // Handler for test route
-  handleClik(index) {
-    let todosDone = this.state.todoDone.slice();
-    todosDone[index] = true;
-    fetch('/api/test')
-    .then(res => res.json())
-    .then(bruh => this.setState({ users: bruh }));
-    console.log(this.state.users);
+  // // Handler for test route
+  // handleClik(index) {
+  //   let todosDone = this.state.todoDone.slice();
+  //   todosDone[index] = true;
+  //   fetch('/api/test')
+  //   .then(res => res.json())
+  //   .then(bruh => this.setState({ users: bruh }));
+  //   console.log(this.state.users);
+  // }
+  // Handles onClick event from the "Add" button to push the todo into the list
+
+  handleAdd() {
+    if (this.state.todosToAdd !== '') {
+      var token = localStorage.getItem('jwt');
+      var user = jwt.verify(token, 'log');
+
+      fetch('/api/addTodo', {
+        method: 'post',
+        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+
+      let todosListCopy = this.state.todos.slice();
+      todosListCopy.push({
+        title: this.state.todosToAdd,
+        note: this.state.noteToAdd
+      });
+      
+      this.setState({
+        todos: todosListCopy,
+        todosToAdd: "",
+        noteToAdd: ""
+      });
+      console.log(this.state.todos);
+    } else {
+      alert('Nothing added to todos!!!');
+    }
   }
-  
+
   // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
+    var token = localStorage.getItem('jwt');
+    var user = jwt.verify(token, 'log');
+
+    fetch('/api/deleteTodo', {
+      method: 'post',
+      body: JSON.stringify([user.username, this.state.todos[index]]),
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    })
+
     let todosListCopy = this.state.todos.slice();
     todosListCopy.splice(index, 1);
     this.setState({
       todos: todosListCopy
     });
+  }
+
+  // Loads user todos when page loads, if user is logged in
+  componentWillMount() {
+    let token = localStorage.getItem('jwt');
+    if (token !== null) {
+      let user = jwt.verify(token, 'log');
+      fetch(`/api/getTodos/${user.username}`)
+        .then(res => res.json())
+        .then(json => {
+          let todosToAdd = this.state.todos.slice();
+          json.forEach(element => {
+            todosToAdd.push(JSON.parse(element.todo));
+          });
+          this.setState({
+            todos: todosToAdd,
+          });
+        })
+    } else { 
+      console.log('Not logged in');
+    }
   }
 
   render() {
@@ -100,10 +147,11 @@ class App extends Component {
 
     return (
       <div className="App">
-        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleClick}></AddTodo>
+      <Navbar></Navbar>
+        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
         <br />
         {/* TEST button to call test route */}
-        <Button onClick={this.handleClik}>sad</Button>
+        {/* <Button onClick={this.handleClik}>sad</Button> */}
         <Card.Group>{listOfTodos}</Card.Group>
       </div>
     );
