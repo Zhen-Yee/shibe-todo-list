@@ -14,7 +14,8 @@ class App extends Component {
       todos: [],
       todosToAdd: "",
       noteToAdd: "",
-      todoDone: [],
+      todosDisabled: [],
+      todosDone: [],
       user: "",
       username: ""
     };
@@ -26,7 +27,7 @@ class App extends Component {
     this.handleDone = this.handleDone.bind(this);
     // this.handleClik = this.handleClik.bind(this);
   }
-  
+
   // Keeps track of user input to later add to the list of todos
   handleOnChange(e) {
     if (e.target.id === 'title') {
@@ -44,15 +45,20 @@ class App extends Component {
   // and store it in the state.
   // Makes a copy of the todos that are done and set it's value to true (this is to prevent from user to check the checkbox multipletime)
   handleDone(index) {
-    let todosDone = this.state.todoDone.slice();
-    todosDone[index] = true;
+    let todosDisabled = this.state.todosDisabled.slice();
+    let todosDone = this.state.todosDone.slice();
+    todosDisabled[index] = true;
+    todosDone.push(JSON.stringify(this.state.todos[index]));
     fetch('https://cors-anywhere.herokuapp.com/http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
-    .then(res => res.json())
-    .then(json => this.setState({
-        shibaImg: json,
-        todoDone: todosDone
-      })
-    );
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+          shibaImg: json,
+          todosDisabled: todosDisabled,
+          todosDone: todosDone
+        })
+        localStorage.setItem("todosDone", todosDone);
+      });
   }
 
   // // Handler for test route
@@ -75,7 +81,7 @@ class App extends Component {
         method: 'post',
         body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         }
       })
 
@@ -84,7 +90,7 @@ class App extends Component {
         title: this.state.todosToAdd,
         note: this.state.noteToAdd
       });
-      
+
       this.setState({
         todos: todosListCopy,
         todosToAdd: "",
@@ -105,7 +111,7 @@ class App extends Component {
       method: 'post',
       body: JSON.stringify([user.username, this.state.todos[index]]),
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       }
     })
 
@@ -119,8 +125,16 @@ class App extends Component {
   // Loads user todos when page loads, if user is logged in
   componentWillMount() {
     let token = localStorage.getItem('jwt');
+    let todosDone = localStorage.getItem('todosDone').split('},{').join('} {').split(' ');
     if (token !== null) {
       let user = jwt.verify(token, 'log');
+      fetch('/api/updateTodos', {
+        method: 'post',
+        body: JSON.stringify([user.username, todosDone]),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then(
       fetch(`/api/getTodos/${user.username}`)
         .then(res => res.json())
         .then(json => {
@@ -131,8 +145,8 @@ class App extends Component {
           this.setState({
             todos: todosToAdd,
           });
-        })
-    } else { 
+        }))
+    } else {
       console.log('Not logged in');
     }
   }
@@ -141,17 +155,15 @@ class App extends Component {
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
-        <TodoList key={index} shiba={this.state.shibaImg[0]} note={todo.note} todo={todo.title} done={() => this.handleDone(index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todoDone[index]} />
+        <TodoList key={index} shiba={this.state.shibaImg[0]} note={todo.note} todo={todo.title} done={() => this.handleDone(index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todosDisabled[index]} />
       );
     });
 
     return (
       <div className="App">
-      <Navbar></Navbar>
+        <Navbar></Navbar>
         <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
         <br />
-        {/* TEST button to call test route */}
-        {/* <Button onClick={this.handleClik}>sad</Button> */}
         <Card.Group>{listOfTodos}</Card.Group>
       </div>
     );

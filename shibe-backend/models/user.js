@@ -94,7 +94,7 @@ exports.deleteTodo = function(username, todo, done) {
 exports.getTodos = function(username, done) {
     db.get().query('SELECT todo FROM zhen_todo.Todos WHERE username = ?', username, function (err, rows) {
         if (err) return done(err);
-        if (rows.length === 0) return done(err);
+        if (rows.length === 0) return [];
         done(null, rows); 
     })
 }

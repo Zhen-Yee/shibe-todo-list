@@ -40,15 +40,15 @@ export class Navbar extends Component {
                 if (on.logged) {
                     localStorage.setItem("jwt", on.jwt);
                     this.toggleLoginModal();
-                    this.setState({ 
+                    this.setState({
                         loggedIn: on.logged,
                     })
                     window.location.reload();
                 }
             });
 
-            // // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
-            // window.location.reload();
+        // // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
+        // window.location.reload();
     }
 
     handleSignup() {
@@ -121,7 +121,7 @@ export class Navbar extends Component {
                     }
                 });
         }
-        
+
     }
 
     render() {
