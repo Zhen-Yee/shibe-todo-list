@@ -4,6 +4,8 @@ import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
 //import { Navbar } from './components/Navbar';
 import jwt from 'jsonwebtoken';
+import Navbar from './components/Navbar';
+import { BrowserRouter } from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ class App extends Component {
       noteToAdd: "",
       todoDone: [],
       user: "",
-      username: ""
+      username: "", 
+      loggedIn: false
     };
 
     // Handler binders
@@ -118,10 +121,14 @@ class App extends Component {
             todosToAdd.push(JSON.parse(element.todo));
           });
           this.setState({
-            todos: todosToAdd
+            todos: todosToAdd,
+            loggedIn: true
           });
         })
     } else { 
+      this.setState({
+        loggedIn: false
+      })
       console.log('Not logged in');
     }
   }
@@ -135,13 +142,17 @@ class App extends Component {
     });
 
     return (
-      <div className="App">
-        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
-        <br />
-        {/* TEST button to call test route */}
-        {/* <Button onClick={this.handleClik}>sad</Button> */}
-        <Card.Group>{listOfTodos}</Card.Group>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          { this.state.loggedIn && 
+          <div>
+            <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
+            <br />
+            <Card.Group>{listOfTodos}</Card.Group>
+          </div>
+          }
+        </div>
+      </BrowserRouter>
     );
   }
 }

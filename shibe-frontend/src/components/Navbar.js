@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, Menu } from 'semantic-ui-react'
 import { Login } from './Login';
 import { Signup } from './Signup';
+import { NavLink, BrowserRouter, Route, Redirect, Link } from 'react-router-dom';
 // import {jwt} from 'jsonwebtoken';
 var jwt = require("jsonwebtoken");
 
@@ -40,13 +41,10 @@ class Navbar extends Component {
             .then(on => {
                 if (on.logged) {
                     localStorage.setItem("jwt", on.jwt);
-                    this.toggleLoginModal();
                     this.setState({ loggedIn: on.logged })
+                    //window.location.reload();
                 }
             });
-
-            // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
-            window.location.reload();
     }
 
     handleSignup() {
@@ -93,12 +91,6 @@ class Navbar extends Component {
         })
     }
 
-    toggleLoginModal = () => {
-        this.setState({
-            loginModal: !this.state.loginModal
-        })
-    }
-
     componentDidMount() {
         // after component is mounted, check if user is logged on already
         if (localStorage.getItem('jwt') !== null) {
@@ -122,41 +114,41 @@ class Navbar extends Component {
     }
 
     render() {
-        const login = this.state.loggedIn
-            ? <p>
-                Welcome {this.state.username}</p>
-            : <Button onClick={this.toggleLoginModal}>Login</Button>;
-        const loggedIn = this.state.loggedIn
-            ? <Button onClick={this.handleLogout}>Logout
-                </Button>
-            : <Button onClick={this.toggleSignupModal}>Signup</Button>
+        const login = this.state.loggedIn ? <p> Welcome {this.state.username}</p> : <Link to='/login'><Button>Login</Button></Link>
+        const loggedIn = this.state.loggedIn ? <Button onClick={this.handleLogout}>Logout</Button> : <Button onClick={this.toggleSignupModal}>Signup</Button>;
         return (
-            <Menu>
-                <Menu.Item>
-                    <Button>Home</Button>
-                </Menu.Item>
-                <Menu.Item>
-                    {login}
+            <BrowserRouter>
+                <div>
+                    <Menu>
+                        <Menu.Item>
+                            <Link to='/'><Button>Home</Button></Link>
+                        </Menu.Item>
+                        <Menu.Item>
+                            {login}
+                        </Menu.Item>
+                        <Menu.Item>
+                            {loggedIn}
+                            <Signup
+                                signup={this.handleSignup}
+                                toggleModal={this.toggleSignupModal}
+                                isModal={this.state.signupModal}
+                                usernameChange={this.handleUsernameChange}
+                                pwChange={this.handlePasswordChange}
+                                emailChange={this.handleEmailChange}
+                                phoneChange={this.handlePhoneChange}></Signup>
+                        </Menu.Item>
+                    </Menu>
+                <Route exact path="/login" render={() => (
                     <Login
                         login={this.handleLogin}
                         toggleModal={this.toggleLoginModal}
                         isModal={this.state.loginModal}
                         usernameChange={this.handleUsernameChange}
-                        pwChange={this.handlePasswordChange}></Login>
-                </Menu.Item>
-                <Menu.Item>
-                    {loggedIn}
-                    <Signup
-                        signup={this.handleSignup}
-                        toggleModal={this.toggleSignupModal}
-                        isModal={this.state.signupModal}
-                        usernameChange={this.handleUsernameChange}
-                        pwChange={this.handlePasswordChange}
-                        emailChange={this.handleEmailChange}
-                        phoneChange={this.handlePhoneChange}></Signup>
-                </Menu.Item>
-
-            </Menu>
+                    pwChange={this.handlePasswordChange}></Login>
+                )} />
+                
+                </div>
+                </BrowserRouter>
         );
     }
 }
