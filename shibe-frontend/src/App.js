@@ -98,6 +98,17 @@ class App extends Component {
   
   // Handles event for removing a todo (removes wanted todo)
   deleteTodo(index) {
+    var token = localStorage.getItem('jwt');
+    var user = jwt.verify(token, 'log');
+    console.log(this.state.todos[index]);
+    fetch('/api/deleteTodo', {
+      method: 'post',
+      body: JSON.stringify([user.username, this.state.todos[index]]),
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    })
+
     let todosListCopy = this.state.todos.slice();
     todosListCopy.splice(index, 1);
     this.setState({

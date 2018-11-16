@@ -148,6 +148,7 @@ router.post('/addTodo', function (req, res) {
 router.post('/deleteTodo', function (req, res) {
     var username = req.body[0];
     var todo = JSON.stringify(req.body[1]);
+    console.log(todo);
     User.deleteTodo(username, todo, function (err) {
         if (err) return err;
     });
