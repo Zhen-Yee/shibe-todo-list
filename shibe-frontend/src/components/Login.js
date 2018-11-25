@@ -7,17 +7,17 @@ export const Login = props => (
         <Modal.Content>
             <Form onSubmit={props.login}>
                 <Form.Field>
-                    <label>Username</label>
-                    <input
+                    <Form.Input
                         onChange={props.usernameChange}
+                        label="Username"
                         placeholder='Username'
                         name="username"
                         required/>
                 </Form.Field>
                 <Form.Field>
-                    <label>Password</label>
-                    <input
+                    <Form.Input
                         onChange={props.pwChange}
+                        label="Password"
                         placeholder='Password'
                         type='password'
                         name="pw"
