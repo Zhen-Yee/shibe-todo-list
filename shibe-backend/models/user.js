@@ -1,49 +1,5 @@
 var db = require('../db')
 var bcrypt = require('bcryptjs')
-// var Sequelize = require('sequelize')
-// const sequelize = new Sequelize('zhen_todo', 'michael', 'michaeltang123', {
-//     host: 'db-instance.cnzpquqwelgj.us-east-2.rds.amazonaws.com',
-//     dialect: 'mysql',
-  
-//     pool: {
-//       max: 5,
-//       min: 0,
-//       acquire: 30000,
-//       idle: 10000
-//     },
-  
-//     // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-//     operatorsAliases: false
-//   });
-
-// User Schema
-// var modelDefinition = {
-//     username: {
-//         type: Sequelize.STRING,
-//         unique: true,
-//         allowNull: false
-//     },
-
-//     password: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
-
-//     email: {
-//         type: Sequelize.STRING,
-//         unique: true,
-//         allowNull: false
-//     },
-
-//     phone: {
-//         type: Sequelize.STRING,
-//         unique: true,
-//         allowNull: false
-//     }
-// };
-
-// var UserModel = db.sequelize.define('user', modelDefinition)
-
 
 // Simple Get Query for Username
 exports.getUser = function(userName, done) {
@@ -99,5 +55,12 @@ exports.getTodos = function(username, done) {
     })
 }
 
+exports.getPhone = function(username, done) {
+    db.get().query(`SELECT phone FROM zhen_todo.Users WHERE username = '${username}'`, function (err, rows) {
+        if (err) return done(err);
+        if (rows.length === 0) return [];
+        done(null, rows[0].phone);
+    })
+}
 
 // module.exports = UserModel;

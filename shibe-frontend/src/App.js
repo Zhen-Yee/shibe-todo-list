@@ -16,7 +16,8 @@ class App extends Component {
       noteToAdd: "",
       todosDisabled: [],
       todosDone: [],
-      user: "",
+      hours: 0,
+      minutes: 0,
       username: ""
     };
 
@@ -25,6 +26,8 @@ class App extends Component {
     this.handleOnChange = this.handleOnChange.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
     this.handleDone = this.handleDone.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
+    this.handleReminder = this.handleReminder.bind(this);
     // this.handleClik = this.handleClik.bind(this);
   }
 
@@ -61,16 +64,30 @@ class App extends Component {
       });
   }
 
-  // // Handler for test route
-  // handleClik(index) {
-  //   let todosDone = this.state.todoDone.slice();
-  //   todosDone[index] = true;
-  //   fetch('/api/test')
-  //   .then(res => res.json())
-  //   .then(bruh => this.setState({ users: bruh }));
-  //   console.log(this.state.users);
-  // }
-  // Handles onClick event from the "Add" button to push the todo into the list
+  handleReminder(index) {
+    fetch('/api/reminder', {
+      method: 'post',
+      body: JSON.stringify([this.state.username, this.state.todos[index], {hours: this.state.hours, minutes: this.state.minutes}]),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(this.setState({
+      hours: 0,
+      minutes: 0
+    }))
+  }
+
+  handleTimeChange(e) {
+    if (e.target.id === 'hours') {
+      this.setState({
+        hours: e.target.value
+      })
+    } else {
+      this.setState({
+        minutes: e.target.value
+      })
+    }
+  }
 
   handleAdd() {
     if (this.state.todosToAdd !== '') {
@@ -148,6 +165,7 @@ class App extends Component {
           });
           this.setState({
             todos: todosToAdd,
+            username: user.username
           });
         }))
     } else {
@@ -159,7 +177,17 @@ class App extends Component {
     let todos = this.state.todos;
     const listOfTodos = todos.map((todo, index) => {
       return (
-        <TodoList key={index} shiba={this.state.shibaImg[0]} note={todo.note} todo={todo.title} done={() => this.handleDone(index)} delete={() => this.deleteTodo(index)} disableCheck={this.state.todosDisabled[index]} />
+        <TodoList key={index}
+        shiba={this.state.shibaImg[0]}
+        note={todo.note}
+        todo={todo.title}
+        done={() => this.handleDone(index)}
+        delete={() => this.deleteTodo(index)}
+        disableCheck={this.state.todosDisabled[index]} 
+        time={this.handleTimeChange}
+        hours={this.state.hours}
+        minutes={this.state.minutes}
+        handleReminder={() => this.handleReminder(index)}/>
       );
     });
 

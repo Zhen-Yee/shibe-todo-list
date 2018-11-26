@@ -5,6 +5,12 @@ var LocalStrategy = require('passport-local').Strategy
 var User = require('../models/user.js')
 var db = require('../db')
 var jwt = require("jsonwebtoken");
+var schedule = require('node-schedule');
+// Twilio auth toke and sid
+const accountSid = 'AC4052543afc6326e854ebd611fedd3062';
+const authToken = '161e06fdf03f4af31fe67415ef5d13d1';
+var client = require('twilio')(accountSid, authToken)
+
 
 passport.serializeUser(function (user, done) {
     done(null, user.username)
@@ -48,9 +54,6 @@ router.post('/login', function (req, res) {
             failureFlash: true
         }, function (req, res) {
             if (req) {
-                // i want to use the req and the res at line 40
-                // if i do res.send it says res is undefined since
-                // the req and res at line 51 belongs to the done function at line 74/77
                 var token = jwt.sign(user, 'log');
                 response.send({ logged: true, jwt: token });
             }
@@ -127,8 +130,6 @@ passport.use('local-signup', new LocalStrategy({ passReqToCallback: true },
                 User.signupUser(newUser, function (err, user) {
                     if (err) console.log(err)
                 })
-                //   let b = db.get().query('SELECT * FROM zhen_todo.Users WHERE username = aa')
-                //   console.log(b)
                 req.login(newUser, function (err) {
                     if (err) throw err
                 })
@@ -168,7 +169,7 @@ router.post('/updateTodos', function (req, res) {
     } else {
         console.log('Nothing to update.')
     }
-    
+
 })
 
 router.get('/getTodos/:username', function (req, res) {
@@ -184,5 +185,28 @@ router.get('/getTodos/:username', function (req, res) {
     })
 })
 
+router.post('/reminder', function (req, res) {
+    var username = req.body[0];
+    var remindTodo = req.body[1];
+    var time = req.body[2];
+    console.log(remindTodo)
+    User.getPhone(username, function (err, phone) {
+        if (err) return err;
+        var startTime = new Date(Date.now() + (60000 * time.minutes + 60000 * 60 * time.hours));
+        var j = schedule.scheduleJob({ start: startTime, rule: '*/1 * * * * *' }, function () {
+            client.messages
+                .create({
+                    body: `\n Woof! Here's your Shibe reminder: Don't forget to ${remindTodo.title} \n -${remindTodo.note}`,
+                    from: '+15878415239',
+                    to: phone
+                })
+                .then(message => {
+                    console.log(message.sid);
+                    j.cancel();
+                })
+                .done();
+        })
+    })
+})
 
 module.exports = router;

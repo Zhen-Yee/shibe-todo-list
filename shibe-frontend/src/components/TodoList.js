@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card } from 'semantic-ui-react';
 import { ShibaImage } from './ShibaImage';
+import { ReminderTime } from './ReminderTime';
 
 export const TodoList = props => {
     return (
@@ -12,8 +13,9 @@ export const TodoList = props => {
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>
-                <div className='ui two buttons'>
+                <div className='ui three buttons'>
                     <ShibaImage shibaImg={props.shiba} onDone={props.done} isDisable={props.disableCheck}></ShibaImage>
+                    <ReminderTime hours={props.hours} minutes={props.minutes} onTime={props.time} submit={props.handleReminder}></ReminderTime>
                     <Button onClick={props.delete} basic color='red' disabled={props.disableCheck}>
                         Remove
                     </Button>
