@@ -48,9 +48,6 @@ router.post('/login', function (req, res) {
             failureFlash: true
         }, function (req, res) {
             if (req) {
-                // i want to use the req and the res at line 40
-                // if i do res.send it says res is undefined since
-                // the req and res at line 51 belongs to the done function at line 74/77
                 var token = jwt.sign(user, 'log');
                 response.send({ logged: true, jwt: token });
             }
@@ -127,8 +124,6 @@ passport.use('local-signup', new LocalStrategy({ passReqToCallback: true },
                 User.signupUser(newUser, function (err, user) {
                     if (err) console.log(err)
                 })
-                //   let b = db.get().query('SELECT * FROM zhen_todo.Users WHERE username = aa')
-                //   console.log(b)
                 req.login(newUser, function (err) {
                     if (err) throw err
                 })
@@ -182,6 +177,12 @@ router.get('/getTodos/:username', function (req, res) {
             res.send(todos);
         }
     })
+})
+
+router.post('/reminder', function (req, res) {
+    var username = req.body[0];
+    var remindTodo = req.body[1];
+    
 })
 
 

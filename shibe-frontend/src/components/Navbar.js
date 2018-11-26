@@ -46,9 +46,6 @@ export class Navbar extends Component {
                     window.location.reload();
                 }
             });
-
-        // // temporary reload to call ComponentWillMount() in App.js -Works 50% of the time.
-        // window.location.reload();
     }
 
     handleSignup() {
