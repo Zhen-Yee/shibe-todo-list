@@ -67,7 +67,7 @@ class App extends Component {
   handleReminder(index) {
     fetch('/api/reminder', {
       method: 'post',
-      body: JSON.stringify([this.state.username, this.state.todos[index], {hours: this.state.hours, minutes: this.state.minutes}]),
+      body: JSON.stringify([this.state.username, this.state.todos[index], { hours: this.state.hours, minutes: this.state.minutes }]),
       headers: {
         'Content-Type': 'application/json',
       }
@@ -156,18 +156,18 @@ class App extends Component {
           'Content-Type': 'application/json',
         }
       }).then(
-      fetch(`/api/getTodos/${user.username}`)
-        .then(res => res.json())
-        .then(json => {
-          let todosToAdd = this.state.todos.slice();
-          json.forEach(element => {
-            todosToAdd.push(JSON.parse(element.todo));
-          });
-          this.setState({
-            todos: todosToAdd,
-            username: user.username
-          });
-        }))
+        fetch(`/api/getTodos/${user.username}`)
+          .then(res => res.json())
+          .then(json => {
+            let todosToAdd = this.state.todos.slice();
+            json.forEach(element => {
+              todosToAdd.push(JSON.parse(element.todo));
+            });
+            this.setState({
+              todos: todosToAdd,
+              username: user.username
+            });
+          }))
     } else {
       console.log('Not logged in');
     }
@@ -178,23 +178,23 @@ class App extends Component {
     const listOfTodos = todos.map((todo, index) => {
       return (
         <TodoList key={index}
-        shiba={this.state.shibaImg[0]}
-        note={todo.note}
-        todo={todo.title}
-        done={() => this.handleDone(index)}
-        delete={() => this.deleteTodo(index)}
-        disableCheck={this.state.todosDisabled[index]} 
-        time={this.handleTimeChange}
-        hours={this.state.hours}
-        minutes={this.state.minutes}
-        handleReminder={() => this.handleReminder(index)}/>
+          shiba={this.state.shibaImg[0]}
+          note={todo.note}
+          todo={todo.title}
+          done={() => this.handleDone(index)}
+          delete={() => this.deleteTodo(index)}
+          disableCheck={this.state.todosDisabled[index]}
+          time={this.handleTimeChange}
+          hours={this.state.hours}
+          minutes={this.state.minutes}
+          handleReminder={() => this.handleReminder(index)} />
       );
     });
 
     return (
       <div className="App">
         <Navbar></Navbar>
-        <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>
+        { this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
         <br />
         <Card.Group>{listOfTodos}</Card.Group>
       </div>

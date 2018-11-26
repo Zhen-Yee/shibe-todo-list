@@ -193,7 +193,7 @@ router.post('/reminder', function (req, res) {
     User.getPhone(username, function (err, phone) {
         if (err) return err;
         var startTime = new Date(Date.now() + (60000 * time.minutes + 60000 * 60 * time.hours));
-        var j = schedule.scheduleJob({ start: startTime, rule: '*/1 * * * * *' }, function () {
+        var job = schedule.scheduleJob({ start: startTime, rule: '*/1 * * * * *' }, function () {
             client.messages
                 .create({
                     body: `\n Woof! Here's your Shibe reminder: Don't forget to ${remindTodo.title} \n -${remindTodo.note}`,
@@ -202,7 +202,7 @@ router.post('/reminder', function (req, res) {
                 })
                 .then(message => {
                     console.log(message.sid);
-                    j.cancel();
+                    job.cancel();
                 })
                 .done();
         })
