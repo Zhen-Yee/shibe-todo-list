@@ -5,6 +5,12 @@ var LocalStrategy = require('passport-local').Strategy
 var User = require('../models/user.js')
 var db = require('../db')
 var jwt = require("jsonwebtoken");
+var cron = require('node-cron');
+// Twilio auth toke and sid
+const accountSid = 'AC4052543afc6326e854ebd611fedd3062';
+const authToken = '161e06fdf03f4af31fe67415ef5d13d1';
+var client = require('twilio')(accountSid, authToken)
+
 
 passport.serializeUser(function (user, done) {
     done(null, user.username)
@@ -163,7 +169,7 @@ router.post('/updateTodos', function (req, res) {
     } else {
         console.log('Nothing to update.')
     }
-    
+
 })
 
 router.get('/getTodos/:username', function (req, res) {
@@ -182,7 +188,20 @@ router.get('/getTodos/:username', function (req, res) {
 router.post('/reminder', function (req, res) {
     var username = req.body[0];
     var remindTodo = req.body[1];
-    
+    var time = req.body[2];
+
+    User.getPhone(username, function (err, phone) {
+        if (err) return err;
+        client.messages
+            .create({
+                body: 'Test Message',
+                from: '+15878415239',
+                to: '+15142902870'
+            })
+            .then(message => console.log(message.sid))
+            .done();
+    })
+
 })
 
 
