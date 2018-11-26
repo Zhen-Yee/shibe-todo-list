@@ -5,7 +5,7 @@ var LocalStrategy = require('passport-local').Strategy
 var User = require('../models/user.js')
 var db = require('../db')
 var jwt = require("jsonwebtoken");
-var cron = require('node-cron');
+var schedule = require('node-schedule');
 // Twilio auth toke and sid
 const accountSid = 'AC4052543afc6326e854ebd611fedd3062';
 const authToken = '161e06fdf03f4af31fe67415ef5d13d1';
@@ -189,20 +189,24 @@ router.post('/reminder', function (req, res) {
     var username = req.body[0];
     var remindTodo = req.body[1];
     var time = req.body[2];
-
+    console.log(remindTodo)
     User.getPhone(username, function (err, phone) {
         if (err) return err;
-        client.messages
-            .create({
-                body: 'Test Message',
-                from: '+15878415239',
-                to: '+15142902870'
-            })
-            .then(message => console.log(message.sid))
-            .done();
+        var startTime = new Date(Date.now() + (60000 * time.minutes + 60000 * 60 * time.hours));
+        var j = schedule.scheduleJob({ start: startTime, rule: '*/1 * * * * *' }, function () {
+            client.messages
+                .create({
+                    body: `\n Woof! Here's your Shibe reminder: Don't forget to ${remindTodo.title} \n -${remindTodo.note}`,
+                    from: '+15878415239',
+                    to: phone
+                })
+                .then(message => {
+                    console.log(message.sid);
+                    j.cancel();
+                })
+                .done();
+        })
     })
-
 })
-
 
 module.exports = router;
