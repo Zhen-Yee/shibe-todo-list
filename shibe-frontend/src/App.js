@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Transition } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
 import { Navbar } from './components/Navbar';
@@ -18,7 +18,8 @@ class App extends Component {
       todosDone: [],
       hours: 0,
       minutes: 0,
-      username: ""
+      username: "",
+      // visible: false **used later for animation**
     };
 
     // Handler binders
@@ -28,6 +29,8 @@ class App extends Component {
     this.handleDone = this.handleDone.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.handleReminder = this.handleReminder.bind(this);
+    // this.handleVisibility = this.handleVisibility.bind(this);
+    // this.onClick = this.onClick.bind(this);
     // this.handleClik = this.handleClik.bind(this);
   }
 
@@ -139,6 +142,16 @@ class App extends Component {
     });
   }
 
+  // handleVisibility() {
+  //   this.setState({
+  //     visible: !this.state.visible
+  //   })
+  // }
+
+  // onClick(event) {
+  //   this.handleAdd();
+  // }
+
   // Loads user todos when page loads, if user is logged in
   componentWillMount() {
     let token = localStorage.getItem('jwt');
@@ -177,6 +190,7 @@ class App extends Component {
     const listOfTodos = todos.map((todo, index) => {
       return (
         <TodoList key={index}
+          visible={this.state.visible}
           shiba={this.state.shibaImg[0]}
           note={todo.note}
           todo={todo.title}
@@ -194,9 +208,11 @@ class App extends Component {
       <div className="App">
         <h1>Welcome to Shibe Todo List!</h1>
         <Navbar></Navbar>
-        { this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
+        {this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
         <br />
-        <Card.Group>{listOfTodos}</Card.Group>
+        <Card.Group>
+            {listOfTodos}
+        </Card.Group>
       </div>
     );
   }

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Card } from 'semantic-ui-react';
+import { Button, Card, Transition } from 'semantic-ui-react';
 import { ShibaImage } from './ShibaImage';
 import { ReminderTime } from './ReminderTime';
 
 export const TodoList = props => {
     return (
+        <Transition animation={'bounce'} duration={750} visible={true}>
         <Card>
             <Card.Content>
                 <Card.Header>{props.todo}</Card.Header>
@@ -22,5 +23,6 @@ export const TodoList = props => {
                 </div>
             </Card.Content>
         </Card>
+        </Transition>
     );
 }
