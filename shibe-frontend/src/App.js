@@ -67,6 +67,7 @@ class App extends Component {
       });
   }
 
+  // calls api to start reminder countdown
   handleReminder(index) {
     fetch('/api/reminder', {
       method: 'post',
@@ -80,6 +81,7 @@ class App extends Component {
     }))
   }
 
+  // sets reminder time value to state
   handleTimeChange(e) {
     if (e.target.id === 'hours') {
       this.setState({
@@ -94,9 +96,8 @@ class App extends Component {
 
   handleAdd() {
     if (this.state.todosToAdd !== '') {
-      var token = localStorage.getItem('jwt');
-      var user = jwt.verify(token, 'log');
-
+      let token = localStorage.getItem('jwt');
+      let user = jwt.verify(token, 'log');
       fetch('/api/addTodo', {
         method: 'post',
         body: JSON.stringify([user.username, {"title": this.state.todosToAdd, "note": this.state.noteToAdd}]),
@@ -105,12 +106,14 @@ class App extends Component {
         }
       })
 
+      // makes copy of current list of todos and add todos to add to copy
       let todosListCopy = this.state.todos.slice();
       todosListCopy.push({
         title: this.state.todosToAdd,
         note: this.state.noteToAdd
       });
 
+      // set new todos to state
       this.setState({
         todos: todosListCopy,
         todosToAdd: "",
@@ -162,6 +165,8 @@ class App extends Component {
         todosDoneArr = todosDone.split('},{').join('} {').split(' ');
       }
       let user = jwt.verify(token, 'log');
+
+      // Removes todos that are done then gets the new todos
       fetch('/api/updateTodos', {
         method: 'post',
         body: JSON.stringify([user.username, todosDoneArr]),

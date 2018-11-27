@@ -80,6 +80,7 @@ export class Navbar extends Component {
         this.setState({ phone: e.target.value })
     }
 
+    // handles logging out to update todos by removing the done todos in the database
     handleLogout = () => {
         let todosDone = localStorage.getItem('todosDone');
         let token = localStorage.getItem('jwt');
@@ -101,7 +102,7 @@ export class Navbar extends Component {
         window.location.reload();
     }
 
-    // so weird, it doesnt work if you do toggleSignupModal() {}
+    // Toggle for login and signup modal
     toggleSignupModal = () => {
         this.setState({
             signupModal: !this.state.signupModal
@@ -133,7 +134,6 @@ export class Navbar extends Component {
                     }
                 });
         }
-
     }
 
     render() {
