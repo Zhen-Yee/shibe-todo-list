@@ -142,7 +142,7 @@ export class Navbar extends Component {
                 Welcome {this.state.username}</p>
             : <Button onClick={this.toggleLoginModal}>Login</Button>;
         const loggedIn = this.state.loggedIn
-            ? <Button onClick={this.handleLogout}>Logout
+            ? <Button style={{"backgroundColor":"red","color":"white"}} onClick={this.handleLogout}>Logout
                 </Button>
             : <Button onClick={this.toggleSignupModal}>Signup</Button>
         return (

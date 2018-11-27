@@ -5,7 +5,7 @@ import { ReminderTime } from './ReminderTime';
 
 export const TodoList = props => {
     return (
-        <Transition animation={'bounce'} duration={750} visible={true}>
+        <Transition animation={'fly down'} duration={750} transitionOnMount={true}>
         <Card>
             <Card.Content>
                 <Card.Header>{props.todo}</Card.Header>

@@ -100,7 +100,7 @@ class App extends Component {
       let user = jwt.verify(token, 'log');
       fetch('/api/addTodo', {
         method: 'post',
-        body: JSON.stringify([user.username, {"title": this.state.todosToAdd, "note": this.state.noteToAdd}]),
+        body: JSON.stringify([user.username, {"title": this.state.todosToAdd, "note": this.state.noteToAdd === '' ? '-' : this.state.noteToAdd}]),
         headers: {
           'Content-Type': 'application/json',
         }
@@ -110,7 +110,7 @@ class App extends Component {
       let todosListCopy = this.state.todos.slice();
       todosListCopy.push({
         title: this.state.todosToAdd,
-        note: this.state.noteToAdd
+        note: this.state.noteToAdd === '' ? '-' : this.state.noteToAdd
       });
 
       // set new todos to state
