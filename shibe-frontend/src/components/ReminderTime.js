@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Modal, Button, Input } from 'semantic-ui-react'
 
 export const ReminderTime = props => (
-  <Modal trigger={<Button basic color='blue'>Reminder</Button>}>
+  <Modal trigger={<Button basic color='blue' disabled={props.isDisable}>Reminder</Button>}>
     <Modal.Header>How long do you want to set your reminder?</Modal.Header>
     <Modal.Content>
       <Form onSubmit={props.submit}>

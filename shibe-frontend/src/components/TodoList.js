@@ -15,7 +15,7 @@ export const TodoList = props => {
             <Card.Content extra>
                 <div className='ui three buttons'>
                     <ShibaImage shibaImg={props.shiba} onDone={props.done} isDisable={props.disableCheck}></ShibaImage>
-                    <ReminderTime hours={props.hours} minutes={props.minutes} onTime={props.time} submit={props.handleReminder}></ReminderTime>
+                    <ReminderTime hours={props.hours} minutes={props.minutes} onTime={props.time} submit={props.handleReminder} isDisable={props.disableCheck}></ReminderTime>
                     <Button onClick={props.delete} basic color='red' disabled={props.disableCheck}>
                         Remove
                     </Button>

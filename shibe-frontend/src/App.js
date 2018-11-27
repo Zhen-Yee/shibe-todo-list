@@ -67,7 +67,7 @@ class App extends Component {
   handleReminder(index) {
     fetch('/api/reminder', {
       method: 'post',
-      body: JSON.stringify([this.state.username, this.state.todos[index], { hours: this.state.hours, minutes: this.state.minutes }]),
+      body: JSON.stringify([this.state.username, this.state.todos[index], {hours: this.state.hours, minutes: this.state.minutes}]),
       headers: {
         'Content-Type': 'application/json',
       }
@@ -96,7 +96,7 @@ class App extends Component {
 
       fetch('/api/addTodo', {
         method: 'post',
-        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd }]),
+        body: JSON.stringify([user.username, {"title": this.state.todosToAdd, "note": this.state.noteToAdd}]),
         headers: {
           'Content-Type': 'application/json',
         }
@@ -155,7 +155,7 @@ class App extends Component {
         headers: {
           'Content-Type': 'application/json',
         }
-      }).then(
+      }).then(this.setState({username: user.username}),
         fetch(`/api/getTodos/${user.username}`)
           .then(res => res.json())
           .then(json => {
@@ -165,7 +165,6 @@ class App extends Component {
             });
             this.setState({
               todos: todosToAdd,
-              username: user.username
             });
           }))
     } else {
@@ -193,6 +192,7 @@ class App extends Component {
 
     return (
       <div className="App">
+        <h1>Welcome to Shibe Todo List!</h1>
         <Navbar></Navbar>
         { this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
         <br />
