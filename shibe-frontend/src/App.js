@@ -217,22 +217,16 @@ class App extends Component {
 
     return (
       <div className="App">
-          <h1>Welcome to Shibe Todo List!</h1>
+
+        <div className="shibe"><img src={shibe}></img></div>
+        <div className="container">
+        <h1>Welcome to Shibe Todo List!</h1>
           <Navbar></Navbar>
           {this.state.username === '' ? <h2 style={{"color": "red"}}>Please log in to start a todo list!</h2> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
           <br />
           <Card.Group>
             {listOfTodos}
           </Card.Group>
-        <div className="shibe"><img src={shibe}></img></div>
-        <div className="container">
-        <h1>Welcome to Shibe Todo List!</h1>
-        <Navbar></Navbar>
-        {this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
-        <br />
-        <Card.Group>
-            {listOfTodos}
-        </Card.Group>
         </div>
         <div className="shibe"><img src={shibe}></img></div>
       </div>
