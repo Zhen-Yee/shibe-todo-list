@@ -1,9 +1,10 @@
 import React from 'react';
-import {Form, Modal, Button} from 'semantic-ui-react';
+import { Form, Modal, Button, Transition } from 'semantic-ui-react';
 
 export const Signup = props => (
     <Modal onClose={props.toggleModal} open={props.isModal}>
         <Modal.Header>Signup</Modal.Header>
+        <Transition animation={'fade down'} duration={1000} transitionOnMount={true}>
         <Modal.Content>
             <Form onSubmit={props.signup}>
                 <Form.Field>
@@ -37,5 +38,6 @@ export const Signup = props => (
                 <Button type='submit'>Submit</Button>
             </Form>
         </Modal.Content>
+        </Transition>
     </Modal>
 )
