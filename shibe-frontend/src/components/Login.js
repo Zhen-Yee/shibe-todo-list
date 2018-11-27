@@ -27,7 +27,6 @@ export const Login = props => (
                     <Button type='submit'>Submit</Button>
                 </Form>
             </Modal.Content>
-
         </Transition>
     </Modal>
 )

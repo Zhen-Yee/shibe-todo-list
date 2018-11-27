@@ -4,15 +4,19 @@
 }
 .container{
   width: 80%;
+  padding-top: 10px;
+  /* background-image: url("smilingShiba.jpg"); */
 }
 .shibe{
 height:100vh;
-
 }
+
 img {
   height:100%;
-  width:526px;
+  width:326px;
+  padding: 10px;
 }
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;

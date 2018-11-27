@@ -6,13 +6,15 @@ import { Navbar } from './components/Navbar';
 import jwt from 'jsonwebtoken';
 import "./App.css";
 import shibe from "./shibe.png";
+import shiba from './smilingShiba.jpg';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
+    let imgShibe = [shiba, shibe]; 
     this.state = {
-      shibaImg: [],
+      shibaImg: [imgShibe[Math.floor((Math.random() * 2))]], // random default shiba img
       todos: [],
       todosToAdd: "",
       noteToAdd: "",
@@ -22,7 +24,6 @@ class App extends Component {
       minutes: 0,
       username: "",
       isLoading: false
-      // visible: false **used later for animation**
     };
 
     // Handler binders
@@ -32,9 +33,6 @@ class App extends Component {
     this.handleDone = this.handleDone.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.handleReminder = this.handleReminder.bind(this);
-    // this.handleVisibility = this.handleVisibility.bind(this);
-    // this.onClick = this.onClick.bind(this);
-    // this.handleClik = this.handleClik.bind(this);
   }
 
   // Keeps track of user input to later add to the list of todos
@@ -99,6 +97,7 @@ class App extends Component {
     }
   }
 
+  // handles add todos
   handleAdd() {
     if (this.state.todosToAdd !== '') {
       let token = localStorage.getItem('jwt');
@@ -149,16 +148,6 @@ class App extends Component {
       todos: todosListCopy
     });
   }
-
-  // handleVisibility() {
-  //   this.setState({
-  //     visible: !this.state.visible
-  //   })
-  // }
-
-  // onClick(event) {
-  //   this.handleAdd();
-  // }
 
   // Loads user todos when page loads, if user is logged in
   componentWillMount() {
@@ -218,7 +207,7 @@ class App extends Component {
     return (
       <div className="App">
 
-        <div className="shibe"><img src={shibe}></img></div>
+        <div className="shibe"><img src={this.state.shibaImg[0]} alt="doge"/></div>
         <div className="container">
         <h1>Welcome to Shibe Todo List!</h1>
           <Navbar></Navbar>
@@ -228,7 +217,7 @@ class App extends Component {
             {listOfTodos}
           </Card.Group>
         </div>
-        <div className="shibe"><img src={shibe}></img></div>
+        <div className="shibe"><img src={this.state.shibaImg[0]} alt="doge"/></div>
       </div>
     );
   }
