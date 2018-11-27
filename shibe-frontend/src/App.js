@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Transition } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import { TodoList } from './components/TodoList';
 import { AddTodo } from './components/AddTodo';
 import { Navbar } from './components/Navbar';
@@ -19,6 +19,7 @@ class App extends Component {
       hours: 0,
       minutes: 0,
       username: "",
+      isLoading: false
       // visible: false **used later for animation**
     };
 
@@ -55,13 +56,15 @@ class App extends Component {
     let todosDone = this.state.todosDone.slice();
     todosDisabled[index] = true;
     todosDone.push(JSON.stringify(this.state.todos[index]));
+    this.setState({isLoading: true})
     fetch('https://cors-anywhere.herokuapp.com/http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
       .then(res => res.json())
       .then(json => {
         this.setState({
           shibaImg: json,
           todosDisabled: todosDisabled,
-          todosDone: todosDone
+          todosDone: todosDone,
+          isLoading: false
         })
         localStorage.setItem("todosDone", todosDone);
       });
@@ -71,7 +74,7 @@ class App extends Component {
   handleReminder(index) {
     fetch('/api/reminder', {
       method: 'post',
-      body: JSON.stringify([this.state.username, this.state.todos[index], {hours: this.state.hours, minutes: this.state.minutes}]),
+      body: JSON.stringify([this.state.username, this.state.todos[index], { hours: this.state.hours, minutes: this.state.minutes }]),
       headers: {
         'Content-Type': 'application/json',
       }
@@ -100,7 +103,7 @@ class App extends Component {
       let user = jwt.verify(token, 'log');
       fetch('/api/addTodo', {
         method: 'post',
-        body: JSON.stringify([user.username, {"title": this.state.todosToAdd, "note": this.state.noteToAdd === '' ? '-' : this.state.noteToAdd}]),
+        body: JSON.stringify([user.username, { "title": this.state.todosToAdd, "note": this.state.noteToAdd === '' ? '-' : this.state.noteToAdd }]),
         headers: {
           'Content-Type': 'application/json',
         }
@@ -173,7 +176,7 @@ class App extends Component {
         headers: {
           'Content-Type': 'application/json',
         }
-      }).then(this.setState({username: user.username}),
+      }).then(this.setState({ username: user.username }),
         fetch(`/api/getTodos/${user.username}`)
           .then(res => res.json())
           .then(json => {
@@ -205,19 +208,20 @@ class App extends Component {
           time={this.handleTimeChange}
           hours={this.state.hours}
           minutes={this.state.minutes}
-          handleReminder={() => this.handleReminder(index)} />
+          handleReminder={() => this.handleReminder(index)}
+          isLoading={this.state.isLoading} />
       );
     });
 
     return (
       <div className="App">
-        <h1>Welcome to Shibe Todo List!</h1>
-        <Navbar></Navbar>
-        {this.state.username === '' ? <p>Please log in to start a todo list!</p> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
-        <br />
-        <Card.Group>
+          <h1>Welcome to Shibe Todo List!</h1>
+          <Navbar></Navbar>
+          {this.state.username === '' ? <h2 style={{"color": "red"}}>Please log in to start a todo list!</h2> : <AddTodo title={this.state.todosToAdd} note={this.state.noteToAdd} keypress={this.handleOnChange} click={this.handleAdd}></AddTodo>}
+          <br />
+          <Card.Group>
             {listOfTodos}
-        </Card.Group>
+          </Card.Group>
       </div>
     );
   }
